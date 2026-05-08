@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simo | Portfolio Overkill</title>
+    <meta name="description" content="Portfolio creativo di Simo - Sviluppatore Full-stack & 3D enthusiast.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loader">
+        <div class="loader-content">
+            <h1 class="glitch" data-text="INITIALIZING">INITIALIZING</h1>
+            <div class="progress-bar"><div class="progress"></div></div>
+        </div>
+    </div>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <nav>
+        <div class="logo">SIMO<span>.</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#projects">Progetti</a></li>
+            <li><a href="#about">Chi Sono</a></li>
+            <li><a href="#contact">Contatti</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h2 class="reveal">Creative Developer</h2>
+                <h1 class="glitch-large" data-text="SIMO">SIMO</h1>
+                <p class="reveal">Trasformo idee complesse in realtà digitali interattive.</p>
+                <div class="cta-group">
+                    <a href="#projects" class="btn btn-primary">Esplora Progetti</a>
+                    <a href="#about" class="btn btn-secondary">Scopri di più</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects">
+            <div class="section-header">
+                <h2 class="reveal">Progetti Selezionati</h2>
+                <div class="line"></div>
+            </div>
+            <div class="project-grid">
+                <!-- Project Cards will be injected or hardcoded -->
+                <div class="project-card glass" data-tilt>
+                    <div class="card-content">
+                        <h3>MetaShape</h3>
+                        <p>Sistema di licensing SaaS avanzato con architettura scalabile e sicurezza HWID.</p>
+                        <div class="tags"><span>Python</span><span>Redis</span><span>Nginx</span></div>
+                        <a href="#" class="project-link">Vedi Dettagli →</a>
+                    </div>
+                </div>
+
+                <div class="project-card glass" data-tilt>
+                    <div class="card-content">
+                        <h3>Solar Explorer</h3>
+                        <p>Esploratore interattivo del sistema solare con rendering 3D in tempo reale.</p>
+                        <div class="tags"><span>Three.js</span><span>HTML/CSS</span><span>JS</span></div>
+                        <a href="#" class="project-link">Vedi Dettagli →</a>
+                    </div>
+                </div>
+
+                <div class="project-card glass" data-tilt>
+                    <div class="card-content">
+                        <h3>ShapeX</h3>
+                        <p>Tool di manipolazione geometrica e design generativo.</p>
+                        <div class="tags"><span>Canvas</span><span>Math</span><span>UI/UX</span></div>
+                        <a href="#" class="project-link">Vedi Dettagli →</a>
+                    </div>
+                </div>
+
+                <div class="project-card glass" data-tilt>
+                    <div class="card-content">
+                        <h3>GitMedic</h3>
+                        <p>Diagnostica e riparazione automatizzata per repository Git corrotti.</p>
+                        <div class="tags"><span>Python</span><span>Git API</span><span>CLI</span></div>
+                        <a href="#" class="project-link">Vedi Dettagli →</a>
+                    </div>
+                </div>
+
+                <div class="project-card glass" data-tilt>
+                    <div class="card-content">
+                        <h3>Stoneks</h3>
+                        <p>Dashboard di analisi finanziaria e monitoraggio crypto in tempo reale.</p>
+                        <div class="tags"><span>React</span><span>WebSockets</span><span>API</span></div>
+                        <a href="#" class="project-link">Vedi Dettagli →</a>
+                    </div>
+                </div>
+
+                <div class="project-card glass" data-tilt>
+                    <div class="card-content">
+                        <h3>SpotFetch</h3>
+                        <p>Utility per il download e la gestione intelligente della libreria Spotify.</p>
+                        <div class="tags"><span>Node.js</span><span>Spotify API</span></div>
+                        <a href="#" class="project-link">Vedi Dettagli →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="about-container glass">
+                <div class="about-text">
+                    <h2>Chi Sono</h2>
+                    <p>Sono uno sviluppatore appassionato di tecnologie emergenti e design interattivo. Mi piace spingere i limiti del web moderno, integrando grafica 3D e performance elevate.</p>
+                    <div class="skills">
+                        <div class="skill-tag">JavaScript</div>
+                        <div class="skill-tag">Three.js</div>
+                        <div class="skill-tag">Python</div>
+                        <div class="skill-tag">C++</div>
+                        <div class="skill-tag">Arduino</div>
+                        <div class="skill-tag">UI/UX Design</div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <!-- 3D visual or image -->
+                    <div class="visual-placeholder"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SIMO. Creato con passione e codice.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
