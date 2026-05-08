@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 const ScrambleText = ({ text }) => {
@@ -27,16 +27,45 @@ const ScrambleText = ({ text }) => {
 };
 
 export default function Hero() {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { damping: 25, stiffness: 150 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [5, -5]);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-5, 5]);
+
+  const handleMouseMove = (e) => {
+    const { innerWidth, innerHeight } = window;
+    const x = (e.clientX / innerWidth) - 0.5;
+    const y = (e.clientY / innerHeight) - 0.5;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <section id="home">
+    <section id="home" style={{ perspective: '1000px' }}>
       <motion.div
+        style={{ 
+          width: '100%',
+          rotateX,
+          rotateY
+        }}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.5 }}
-        style={{ width: '100%' }}
+        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
       >
         <div style={{ marginBottom: '2rem' }} className="hud-text">
-          [System_Init] // Core_Systems_Online
+          <motion.span animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, duration: 2 }}>
+            [System_Init] // Core_Systems_Online
+          </motion.span>
         </div>
         
         <h1 style={{

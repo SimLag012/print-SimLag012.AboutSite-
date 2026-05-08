@@ -1,44 +1,53 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Stars, MeshDistortMaterial, Sphere, Grid, PerspectiveCamera, Environment, Center } from '@react-three/drei';
-import { useRef, useMemo, useEffect } from 'react';
+import { Float, Stars, MeshDistortMaterial, Sphere, Grid, PerspectiveCamera, Environment } from '@react-three/drei';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
-import gsap from 'gsap';
 
 function TechCore({ scrollProgress }) {
   const groupRef = useRef();
   const count = 64;
   const meshRef = useRef();
+  const { mouse } = useThree();
   
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const positions = useMemo(() => {
     const p = [];
     for (let i = 0; i < count; i++) {
       p.push({
-        x: (Math.random() - 0.5) * 4,
-        y: (Math.random() - 0.5) * 4,
-        z: (Math.random() - 0.5) * 4,
+        phi: Math.acos(-1 + (2 * i) / count),
+        theta: Math.sqrt(count * Math.PI) * Math.acos(-1 + (2 * i) / count),
         rot: Math.random() * Math.PI
       });
     }
     return p;
   }, []);
 
+  // Smooth mouse values with lerp
+  const smoothMouse = useRef({ x: 0, y: 0 });
+
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
     
+    // Lerp mouse movement for buttery smoothness
+    smoothMouse.current.x = THREE.MathUtils.lerp(smoothMouse.current.x, mouse.x, 0.05);
+    smoothMouse.current.y = THREE.MathUtils.lerp(smoothMouse.current.y, mouse.y, 0.05);
+    
     positions.forEach((p, i) => {
-      // Calculate expansion based on scroll
-      const expansion = scrollProgress * 15;
+      const expansion = scrollProgress * 18;
       
-      // Normal circular position
-      const phi = Math.acos(-1 + (2 * i) / count);
-      const theta = Math.sqrt(count * Math.PI) * phi;
-      
-      const targetX = Math.cos(theta) * Math.sin(phi) * (2 + expansion);
-      const targetY = Math.sin(theta) * Math.sin(phi) * (2 + expansion);
-      const targetZ = Math.cos(phi) * (2 + expansion);
+      // Calculate target sphere position
+      const targetX = Math.cos(p.theta) * Math.sin(p.phi) * (2 + expansion);
+      const targetY = Math.sin(p.theta) * Math.sin(p.phi) * (2 + expansion);
+      const targetZ = Math.cos(p.phi) * (2 + expansion);
 
-      dummy.position.set(targetX, targetY, targetZ);
+      // Add mouse displacement
+      const mouseFactor = (1 - scrollProgress) * 5;
+      dummy.position.set(
+        targetX + smoothMouse.current.x * mouseFactor,
+        targetY + smoothMouse.current.y * mouseFactor,
+        targetZ
+      );
+      
       dummy.rotation.set(time * 0.2 + p.rot, time * 0.3, 0);
       dummy.scale.setScalar(0.4 * (1 - scrollProgress * 0.5));
       dummy.updateMatrix();
@@ -46,48 +55,53 @@ function TechCore({ scrollProgress }) {
     });
     
     meshRef.current.instanceMatrix.needsUpdate = true;
-    groupRef.current.rotation.y += 0.002;
+    
+    // Tilt the whole group slightly based on mouse
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, smoothMouse.current.x * 0.5, 0.05);
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -smoothMouse.current.y * 0.5, 0.05);
   });
 
   return (
     <group ref={groupRef}>
       <instancedMesh ref={meshRef} args={[null, null, count]}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#fff" metalness={0.8} roughness={0.1} transparent opacity={0.8} />
+        <meshStandardMaterial color="#fff" metalness={0.9} roughness={0.05} transparent opacity={0.6} />
       </instancedMesh>
       
-      {/* Central Light Core */}
-      <Sphere args={[1.5, 32, 32]}>
-        <meshBasicMaterial color="#00f2ff" transparent opacity={0.1 * (1 - scrollProgress)} />
+      <Sphere args={[1.5, 64, 64]}>
+        <meshBasicMaterial color="#00f2ff" transparent opacity={0.05 * (1 - scrollProgress)} />
       </Sphere>
     </group>
   );
 }
 
-function HudLines() {
+function GridBackground() {
   const { mouse } = useThree();
-  const lineRef = useRef();
+  const gridRef = useRef();
+  const smoothMouse = useRef({ x: 0, y: 0 });
 
   useFrame(() => {
-    if (lineRef.current) {
-      lineRef.current.rotation.y = THREE.MathUtils.lerp(lineRef.current.rotation.y, mouse.x * 0.5, 0.05);
-      lineRef.current.rotation.x = THREE.MathUtils.lerp(lineRef.current.rotation.x, -mouse.y * 0.5, 0.05);
+    smoothMouse.current.x = THREE.MathUtils.lerp(smoothMouse.current.x, mouse.x, 0.03);
+    smoothMouse.current.y = THREE.MathUtils.lerp(smoothMouse.current.y, mouse.y, 0.03);
+    
+    if (gridRef.current) {
+      gridRef.current.position.x = smoothMouse.current.x * 2;
+      gridRef.current.position.z = smoothMouse.current.y * 2;
     }
   });
 
   return (
-    <group ref={lineRef}>
+    <group ref={gridRef}>
       <Grid 
         infiniteGrid 
-        fadeDistance={50} 
+        fadeDistance={40} 
         fadeStrength={5} 
         cellSize={1} 
-        sectionSize={5} 
+        sectionSize={10} 
         sectionColor="#ffffff" 
-        cellColor="#222222" 
-        position={[0, -10, 0]} 
-        rotation={[Math.PI / 2, 0, 0]}
-        opacity={0.1}
+        cellColor="#111111" 
+        position={[0, -8, 0]} 
+        opacity={0.05}
       />
     </group>
   );
@@ -96,21 +110,21 @@ function HudLines() {
 export default function Background3D({ scrollProgress = 0 }) {
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: -1 }}>
-      <Canvas shadows gl={{ antialias: true }}>
+      <Canvas shadows dpr={[1, 2]}>
         <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={50} />
-        <color attach="background" args={['#050505']} />
+        <color attach="background" args={['#010101']} />
         
-        <ambientLight intensity={0.2} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} castShadow />
-        <pointLight position={[-10, -10, -10]} color="#00f2ff" intensity={1} />
+        <ambientLight intensity={0.1} />
+        <spotLight position={[10, 10, 10]} angle={0.2} penumbra={1} intensity={1.5} />
+        <pointLight position={[-10, -10, -10]} color="#00f2ff" intensity={0.5} />
         
         <TechCore scrollProgress={scrollProgress} />
-        <HudLines />
+        <GridBackground />
         
-        <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
-        <Environment preset="city" />
+        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        <Environment preset="night" />
         
-        <fog attach="fog" args={['#050505', 10, 40]} />
+        <fog attach="fog" args={['#010101', 5, 35]} />
       </Canvas>
     </div>
   );

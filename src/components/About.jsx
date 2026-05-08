@@ -16,6 +16,7 @@ export default function About() {
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="hud-text" style={{ marginBottom: '2rem' }}>[Bio] // Diagnostic_Report</div>
           <h2 style={{
@@ -44,29 +45,23 @@ export default function About() {
               key={spec.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ x: 20, backgroundColor: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.2)' }}
               viewport={{ once: true }}
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 padding: '25px',
                 borderBottom: '1px solid var(--hud-border)',
-                background: 'rgba(255,255,255,0.01)'
+                background: 'rgba(255,255,255,0.01)',
+                cursor: 'default',
+                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
               }}
             >
               <span className="hud-text" style={{ color: '#fff' }}>{spec.label}</span>
               <span className="hud-text">{spec.value}</span>
             </motion.div>
           ))}
-          
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="hud-text"
-            style={{ marginTop: '20px', textAlign: 'right', fontSize: '0.5rem' }}
-          >
-            [CheckSum] // 0x5F3759DF
-          </motion.div>
         </div>
       </div>
     </section>
