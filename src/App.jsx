@@ -8,13 +8,14 @@ import Background3D from './components/Background3D'
 import { motion, AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Lenis from '@studio-freight/lenis'
 
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [loading, setLoading] = useState(true)
   const [scrollProgress, setScrollProgress] = useState(0)
-  const containerRef = useRef(null)
+  const lenisRef = useRef(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -25,14 +26,43 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      ScrollTrigger.create({
-        trigger: "body",
-        start: "top top",
-        end: "bottom bottom",
-        onUpdate: (self) => {
-          setScrollProgress(self.progress)
-        }
-      });
+      // Initialize Lenis Smooth Scroll
+      const lenis = new Lenis({
+        duration: 1.5,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+      })
+
+      lenisRef.current = lenis
+
+      function raf(time) {
+        lenis.raf(time)
+        requestAnimationFrame(raf)
+      }
+
+      requestAnimationFrame(raf)
+
+      lenis.on('scroll', (e) => {
+        setScrollProgress(e.progress)
+      })
+
+      // Sync with GSAP ScrollTrigger
+      lenis.on('scroll', ScrollTrigger.update)
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000)
+      })
+      gsap.ticker.lagSmoothing(0)
+
+      return () => {
+        lenis.destroy()
+        gsap.ticker.remove(raf)
+      }
     }
   }, [loading])
 
@@ -55,7 +85,7 @@ function App() {
             }}
           >
             <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '20px', letterSpacing: '4px' }}>
-              BOOTING_CORE_V3.0
+              REBOOTING_SYSTEM_V3
             </div>
             <div style={{ width: '200px', height: '1px', background: '#222', overflow: 'hidden' }}>
               <motion.div 
@@ -72,7 +102,7 @@ function App() {
       <Background3D scrollProgress={scrollProgress} />
       <Navbar />
       
-      <main ref={containerRef} style={{ position: 'relative', zIndex: 1 }}>
+      <main style={{ position: 'relative', zIndex: 1 }}>
         <Hero />
         <About />
         <Architecture />
@@ -90,17 +120,16 @@ function App() {
           letterSpacing: '2px'
         }}>
           <div>
-            [SIMONE] // BACKEND_ENGINEER<br/>
-            [REVISION] // 2026.05.08
+            [SIMONE] // BACKEND_ARCHITECT<br/>
+            [BUILD] // 2026_FINAL
           </div>
           <div>
             &copy; SIMLAG012_SYSTEMS<br/>
-            ALL_LOGIC_RESERVED
+            HYPER_SMOOTH_ENGAGED
           </div>
         </footer>
       </main>
 
-      {/* Persistent HUD elements */}
       <div style={{
         position: 'fixed',
         bottom: '40px',
@@ -109,28 +138,7 @@ function App() {
         pointerEvents: 'none'
       }} className="hud-text">
         <div style={{ color: '#fff', marginBottom: '5px' }}>Status: Optimal</div>
-        <div style={{ opacity: 0.5 }}>Core_Load: {(scrollProgress * 100).toFixed(2)}%</div>
-      </div>
-      
-      <div style={{
-        position: 'fixed',
-        top: '50%',
-        right: '40px',
-        transform: 'translateY(-50%)',
-        zIndex: 100,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-        alignItems: 'flex-end'
-      }}>
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} style={{
-            width: '2px',
-            height: '40px',
-            background: scrollProgress > i * 0.25 ? '#fff' : '#222',
-            transition: '0.3s'
-          }} />
-        ))}
+        <div style={{ opacity: 0.5 }}>Buffer_Health: {(scrollProgress * 100).toFixed(1)}%</div>
       </div>
     </>
   )

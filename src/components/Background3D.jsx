@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Stars, MeshDistortMaterial, Sphere, Grid, PerspectiveCamera, Environment } from '@react-three/drei';
+import { Stars, Sphere, Grid, PerspectiveCamera, Environment } from '@react-three/drei';
 import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 
@@ -24,12 +24,10 @@ function TechCore({ scrollProgress, smoothMouse }) {
 
   useFrame((state) => {
     if (!meshRef.current || !groupRef.current) return;
-    
     const time = state.clock.getElapsedTime();
     
     positions.forEach((p, i) => {
       const expansion = scrollProgress * 15;
-      
       const targetX = Math.cos(p.theta) * Math.sin(p.phi) * (2 + expansion);
       const targetY = Math.sin(p.theta) * Math.sin(p.phi) * (2 + expansion);
       const targetZ = Math.cos(p.phi) * (2 + expansion);
@@ -48,7 +46,6 @@ function TechCore({ scrollProgress, smoothMouse }) {
     });
     
     meshRef.current.instanceMatrix.needsUpdate = true;
-    
     groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, smoothMouse.current.x * 0.3, 0.05);
     groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -smoothMouse.current.y * 0.3, 0.05);
   });
@@ -59,14 +56,11 @@ function TechCore({ scrollProgress, smoothMouse }) {
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial color="#ffffff" metalness={1} roughness={0.1} transparent opacity={0.6} />
       </instancedMesh>
-      <Sphere args={[1.2, 32, 32]}>
-        <meshBasicMaterial color="#00f2ff" transparent opacity={0.1 * (1 - scrollProgress)} />
-      </Sphere>
     </group>
   );
 }
 
-function FloatingCubes({ count = 50, smoothMouse }) {
+function FloatingCubes({ count = 100, smoothMouse }) {
   const meshRef = useRef();
   const dummy = useMemo(() => new THREE.Object3D(), []);
   
@@ -74,12 +68,15 @@ function FloatingCubes({ count = 50, smoothMouse }) {
     const temp = [];
     for (let i = 0; i < count; i++) {
       temp.push({
-        x: (Math.random() - 0.5) * 40,
-        y: (Math.random() - 0.5) * 40,
-        z: (Math.random() - 0.5) * 20,
+        pos: new THREE.Vector3(
+          (Math.random() - 0.5) * 50,
+          (Math.random() - 0.5) * 50,
+          (Math.random() - 0.5) * 20
+        ),
         rotSpeed: Math.random() * 0.01,
         floatSpeed: 0.005 + Math.random() * 0.005,
-        phase: Math.random() * Math.PI * 2
+        phase: Math.random() * Math.PI * 2,
+        scale: 0.1 + Math.random() * 0.2
       });
     }
     return temp;
@@ -87,25 +84,31 @@ function FloatingCubes({ count = 50, smoothMouse }) {
 
   useFrame((state) => {
     if (!meshRef.current) return;
-    
     const time = state.clock.getElapsedTime();
     
     particles.forEach((p, i) => {
-      const floatX = Math.sin(time * p.floatSpeed + p.phase) * 1;
-      const floatY = Math.cos(time * p.floatSpeed + p.phase) * 1;
+      // Base floating motion
+      const floatX = Math.sin(time * p.floatSpeed + p.phase) * 1.5;
+      const floatY = Math.cos(time * p.floatSpeed + p.phase) * 1.5;
       
-      const mouseInfluenceX = smoothMouse.current.x * 10 * p.floatSpeed * 50;
-      const mouseInfluenceY = smoothMouse.current.y * 10 * p.floatSpeed * 50;
-
-      dummy.position.set(
-        p.x + floatX + mouseInfluenceX,
-        p.y + floatY + mouseInfluenceY,
-        p.z + Math.sin(time * 0.1 + p.phase) * 2
+      const currentPos = new THREE.Vector3(
+        p.pos.x + floatX,
+        p.pos.y + floatY,
+        p.pos.z
       );
+
+      // Magnetic Mouse Interaction
+      const mousePos = new THREE.Vector3(smoothMouse.current.x * 25, -smoothMouse.current.y * 15, 0);
+      const dist = currentPos.distanceTo(mousePos);
+      const force = Math.max(0, 15 - dist) * 0.5; // Force field radius 15
       
+      const dir = new THREE.Vector3().subVectors(currentPos, mousePos).normalize();
+      currentPos.add(dir.multiplyScalar(force));
+
+      dummy.position.copy(currentPos);
       dummy.rotation.x += p.rotSpeed;
       dummy.rotation.y += p.rotSpeed;
-      dummy.scale.setScalar(0.2 + Math.sin(time * 0.3 + p.phase) * 0.1);
+      dummy.scale.setScalar(p.scale + Math.sin(time * 0.5 + p.phase) * 0.05);
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
@@ -115,7 +118,7 @@ function FloatingCubes({ count = 50, smoothMouse }) {
   return (
     <instancedMesh ref={meshRef} args={[null, null, count]}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#444444" metalness={1} roughness={0.2} transparent opacity={0.3} />
+      <meshStandardMaterial color="#444" metalness={1} roughness={0.2} transparent opacity={0.4} />
     </instancedMesh>
   );
 }
@@ -131,15 +134,15 @@ export default function Background3D({ scrollProgress = 0 }) {
         <color attach="background" args={['#010101']} />
         
         <ambientLight intensity={0.2} />
-        <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={1.5} />
-        <pointLight position={[-10, -10, -10]} color="#00f2ff" intensity={0.5} />
+        <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={2} />
+        <pointLight position={[-10, -10, -10]} color="#00f2ff" intensity={1} />
         
         <TechCore scrollProgress={scrollProgress} smoothMouse={smoothMouse} />
-        <FloatingCubes count={60} smoothMouse={smoothMouse} />
+        <FloatingCubes count={120} smoothMouse={smoothMouse} />
         
         <Grid 
           infiniteGrid 
-          fadeDistance={40} 
+          fadeDistance={50} 
           fadeStrength={5} 
           cellSize={1} 
           sectionSize={10} 
@@ -149,7 +152,7 @@ export default function Background3D({ scrollProgress = 0 }) {
           opacity={0.04}
         />
         
-        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        <Stars radius={100} depth={50} count={6000} factor={4} saturation={0} fade speed={1} />
         <Environment preset="night" />
         
         <fog attach="fog" args={['#010101', 5, 40]} />
@@ -158,7 +161,6 @@ export default function Background3D({ scrollProgress = 0 }) {
   );
 }
 
-// Inner component to handle useFrame within Canvas
 function SceneController({ smoothMouse }) {
   const { mouse } = useThree();
   useFrame(() => {
