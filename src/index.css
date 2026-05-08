@@ -1,14 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
-  --bg: #030303;
+  --bg: #010101;
   --primary: #00f2ff;
   --secondary: #bc00ff;
+  --accent: #ffc400;
   --text: #ffffff;
-  --text-muted: #a0a0a0;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --accent-glow: 0 0 20px rgba(0, 242, 255, 0.3);
+  --text-muted: #888888;
+  --glass: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --accent-glow: 0 0 30px rgba(0, 242, 255, 0.2);
 }
 
 * {
@@ -95,4 +96,19 @@ canvas {
   60% { clip: rect(31px, 9999px, 94px, 0); }
   80% { clip: rect(62px, 9999px, 42px, 0); }
   100% { clip: rect(82px, 9999px, 31px, 0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+section {
+  position: relative;
+  overflow: hidden;
 }

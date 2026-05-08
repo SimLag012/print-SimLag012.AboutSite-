@@ -1,4 +1,30 @@
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
+const ScrambleText = ({ text }) => {
+  const [displayText, setDisplayText] = useState(text);
+  const chars = "!<>-_\\/[]{}—=+*^?#________";
+
+  useEffect(() => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(prev => 
+        text.split("")
+          .map((char, index) => {
+            if(index < iteration) return text[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+      
+      if(iteration >= text.length) clearInterval(interval);
+      iteration += 1/3;
+    }, 30);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <span>{displayText}</span>;
+};
 
 export default function Hero() {
   return (
@@ -15,72 +41,95 @@ export default function Hero() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
       >
-        <h2 style={{
-          fontSize: '1.2rem',
-          color: 'var(--primary)',
-          textTransform: 'uppercase',
-          letterSpacing: '4px',
-          marginBottom: '1rem'
-        }}>Creative Developer</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1rem' }}>
+          <div style={{ width: '40px', height: '2px', background: 'var(--primary)' }}></div>
+          <h2 style={{
+            fontSize: '1rem',
+            color: 'var(--primary)',
+            textTransform: 'uppercase',
+            letterSpacing: '6px',
+            fontWeight: 700
+          }}>Systems & Backend Engineer</h2>
+        </div>
         
-        <h1 className="glitch" data-text="SIMO" style={{
+        <h1 style={{
           fontFamily: 'Orbitron, sans-serif',
-          fontSize: 'clamp(4rem, 10vw, 8rem)',
+          fontSize: 'clamp(3rem, 12vw, 9rem)',
           fontWeight: 900,
-          lineHeight: 1,
-          marginBottom: '2rem'
+          lineHeight: 0.9,
+          marginBottom: '2rem',
+          color: '#fff',
+          textTransform: 'uppercase'
         }}>
-          SIMO
+          <ScrambleText text="SimLag012" />
         </h1>
         
         <p style={{
-          fontSize: '1.2rem',
+          fontSize: '1.4rem',
           color: 'var(--text-muted)',
-          lineHeight: 1.6,
-          maxWidth: '600px',
-          marginBottom: '3rem'
+          lineHeight: 1.5,
+          maxWidth: '700px',
+          marginBottom: '4rem',
+          fontWeight: 300,
+          fontFamily: 'Inter, sans-serif'
         }}>
-          Ingegnere del software specializzato in esperienze interattive "overkill" e architetture scalabili.
+          Specializzato in <span style={{ color: '#fff', fontWeight: 600 }}>architetture scalabili</span>, 
+          sicurezza di basso livello e <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>sistemi core</span>. 
+          Ignoro il superfluo per concentrarmi sulla pura logica del backend.
         </p>
 
-        <div style={{ display: 'flex', gap: '20px' }}>
+        <div style={{ display: 'flex', gap: '30px' }}>
           <motion.a 
             href="#projects" 
-            whileHover={{ scale: 1.05, boxShadow: '0 0 25px rgba(0,242,255,0.5)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(0,242,255,0.4)' }}
+            whileTap={{ scale: 0.95 }}
             style={{
-              padding: '15px 40px',
+              padding: '20px 50px',
               background: 'var(--primary)',
               color: '#000',
               textDecoration: 'none',
-              fontWeight: 700,
-              borderRadius: '4px',
+              fontWeight: 900,
+              borderRadius: '2px',
               textTransform: 'uppercase',
-              letterSpacing: '1px'
+              letterSpacing: '2px',
+              fontSize: '0.8rem'
             }}
           >
-            Esplora Progetti
+            Access Core
           </motion.a>
           
           <motion.a 
             href="#about" 
-            whileHover={{ scale: 1.05, background: 'rgba(255,255,255,0.1)' }}
+            whileHover={{ scale: 1.05, borderColor: 'var(--primary)' }}
+            whileTap={{ scale: 0.95 }}
             style={{
-              padding: '15px 40px',
-              background: 'var(--glass)',
+              padding: '20px 50px',
+              background: 'transparent',
               border: '1px solid var(--glass-border)',
-              backdropFilter: 'blur(5px)',
-              color: 'var(--text)',
+              color: '#fff',
               textDecoration: 'none',
-              fontWeight: 700,
-              borderRadius: '4px',
+              fontWeight: 900,
+              borderRadius: '2px',
               textTransform: 'uppercase',
-              letterSpacing: '1px'
+              letterSpacing: '2px',
+              fontSize: '0.8rem'
             }}
           >
-            Chi Sono
+            Diagnostics
           </motion.a>
         </div>
       </motion.div>
+
+      {/* Decorative vertical lines */}
+      <div style={{
+        position: 'absolute',
+        right: '5%',
+        top: '20%',
+        height: '60%',
+        width: '1px',
+        background: 'linear-gradient(to bottom, transparent, var(--primary), transparent)',
+        opacity: 0.3
+      }}></div>
     </section>
   );
 }

@@ -1,84 +1,108 @@
 import { motion } from 'framer-motion';
 
 export default function About() {
-  const skills = ["JavaScript", "React", "Three.js", "Python", "C++", "Arduino", "UI/UX", "Node.js", "Redis"];
+  const serverSpecs = [
+    { label: "Core Logic", value: "Python / Node.js" },
+    { label: "Infrastructure", value: "Nginx / Redis" },
+    { label: "Architecture", value: "Microservices" },
+    { label: "Security", value: "HWID / Encryption" },
+    { label: "Database", value: "PostgreSQL / MongoDB" },
+  ];
 
   return (
     <section id="about" style={{ padding: '100px 10%' }}>
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          padding: '80px',
-          borderRadius: '20px',
-          background: 'var(--glass)',
-          border: '1px solid var(--glass-border)',
-          backdropFilter: 'blur(20px)',
-          gap: '50px',
-          alignItems: 'center'
-        }}
-      >
-        <div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '60px' }}>
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+        >
           <h2 style={{
             fontFamily: 'Orbitron, sans-serif',
-            fontSize: '3rem',
-            marginBottom: '30px'
-          }}>Chi Sono</h2>
+            fontSize: '3.5rem',
+            marginBottom: '40px',
+            fontWeight: 900
+          }}>IL MIO CORE</h2>
+          
           <p style={{
             color: 'var(--text-muted)',
-            fontSize: '1.1rem',
-            lineHeight: '1.8',
-            marginBottom: '40px'
+            fontSize: '1.2rem',
+            lineHeight: '1.9',
+            marginBottom: '30px'
           }}>
-            Sono uno sviluppatore full-stack con una forte propensione per la grafica computazionale e l'ingegneria dei sistemi. 
-            Il mio approccio unisce design visivo premium e performance tecniche senza compromessi. 
-            Ogni progetto è una sfida per superare i limiti del possibile nel web moderno.
+            Mi chiamo <span style={{ color: '#fff', fontWeight: 600 }}>Simone</span>. 
+            Il mio mondo inizia dove finisce l'interfaccia utente. 
+            Il frontend è solo la pelle, ma io mi occupo degli organi e del sistema nervoso: 
+            <span style={{ color: 'var(--primary)' }}> la logica del backend</span>.
           </p>
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '15px'
+
+          <p style={{
+            color: 'var(--text-muted)',
+            fontSize: '1.2rem',
+            lineHeight: '1.9',
+            marginBottom: '50px'
           }}>
-            {skills.map((skill) => (
-              <motion.div
-                key={skill}
-                whileHover={{ scale: 1.1, borderColor: 'var(--primary)', color: 'var(--primary)' }}
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  padding: '10px 25px',
-                  borderRadius: '5px',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                  cursor: 'default',
-                  transition: '0.2s'
-                }}
-              >
-                {skill}
-              </motion.div>
+            Non mi interessa creare bottoni colorati o layout responsivi. 
+            Il mio obiettivo è l'efficienza pura, la scalabilità orizzontale e la sicurezza dei dati. 
+            Se un sistema non è ottimizzato a livello di microsecondi, non è ancora finito.
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px'
+          }}>
+            {serverSpecs.map((spec) => (
+              <div key={spec.label} style={{
+                background: 'rgba(255,255,255,0.02)',
+                padding: '20px',
+                borderLeft: '2px solid var(--primary)'
+              }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px' }}>{spec.label}</div>
+                <div style={{ fontSize: '1rem', color: '#fff', fontWeight: 700, marginTop: '5px' }}>{spec.value}</div>
+              </div>
             ))}
           </div>
-        </div>
+        </motion.div>
         
-        <div style={{
-          position: 'relative',
-          height: '400px',
-          background: 'linear-gradient(45deg, var(--primary), var(--secondary))',
-          borderRadius: '15px',
-          opacity: 0.2,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '5rem',
-          color: '#fff',
-          fontWeight: 900
-        }}>
-          SIMO
-        </div>
-      </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          style={{
+            background: 'var(--glass)',
+            border: '1px solid var(--glass-border)',
+            padding: '40px',
+            borderRadius: '10px',
+            fontFamily: 'monospace',
+            fontSize: '0.85rem',
+            color: 'var(--primary)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          <div style={{ marginBottom: '20px', color: '#fff', fontWeight: 700 }}>SYSTEM_DIAGNOSTICS v2.0.4</div>
+          <div style={{ color: '#00ff88' }}>[OK] Server initialized</div>
+          <div style={{ color: '#00ff88' }}>[OK] Database handshake stable</div>
+          <div style={{ color: '#00ff88' }}>[OK] HWID Authentication active</div>
+          <div style={{ color: '#ffc400' }}>[WARN] Sub-optimal latency in node_7</div>
+          <div style={{ color: '#00ff88' }}>[OK] Caching via Redis (hit rate 98%)</div>
+          <br />
+          <div style={{ color: 'var(--text-muted)' }}>$ simone --status --full</div>
+          <div style={{ paddingLeft: '15px' }}>
+            User: SimLag012<br />
+            Role: Backend Architect<br />
+            Preference: Pure Logic / CLI<br />
+            Hobby: Low-level optimization
+          </div>
+          <br />
+          <motion.div 
+            animate={{ opacity: [1, 0] }} 
+            transition={{ repeat: Infinity, duration: 0.8 }}
+            style={{ width: '10px', height: '20px', background: 'var(--primary)' }}
+          />
+        </motion.div>
+      </div>
     </section>
   );
 }

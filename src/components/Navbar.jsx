@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 export default function Navbar() {
   const navLinks = [
     { name: 'Home', href: '#home' },
-    { name: 'Progetti', href: '#projects' },
-    { name: 'About', href: '#about' },
-    { name: 'Contatti', href: '#contact' },
+    { name: 'Sistemi', href: '#projects' },
+    { name: 'Core', href: '#about' },
+    { name: 'Signal', href: '#contact' },
   ];
 
   return (
@@ -22,38 +22,39 @@ export default function Navbar() {
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 1000,
-        backdropFilter: 'blur(10px)',
-        background: 'rgba(0,0,0,0.2)',
-        borderBottom: '1px solid rgba(255,255,255,0.05)'
+        backdropFilter: 'blur(15px)',
+        background: 'rgba(0,0,0,0.4)',
+        borderBottom: '1px solid rgba(0,242,255,0.1)'
       }}
     >
       <div style={{
         fontFamily: 'Orbitron, sans-serif',
         fontSize: '1.5rem',
         fontWeight: 900,
-        letterSpacing: '2px'
+        letterSpacing: '2px',
+        color: '#fff'
       }}>
-        SIMO<span style={{ color: 'var(--primary)' }}>.</span>
+        SimLag012<span style={{ color: 'var(--primary)' }}>_</span>
       </div>
       
       <ul style={{
         display: 'flex',
         listStyle: 'none',
-        gap: '30px'
+        gap: '40px'
       }}>
         {navLinks.map((link) => (
           <li key={link.name}>
             <motion.a 
               href={link.href}
-              whileHover={{ color: 'var(--primary)', scale: 1.1 }}
+              whileHover={{ color: 'var(--primary)', scale: 1.1, textShadow: '0 0 8px var(--primary)' }}
               style={{
                 textDecoration: 'none',
-                color: 'var(--text)',
+                color: 'var(--text-muted)',
                 textTransform: 'uppercase',
-                fontSize: '0.8rem',
-                letterSpacing: '1px',
+                fontSize: '0.75rem',
+                letterSpacing: '2px',
                 transition: '0.3s',
-                fontWeight: 600
+                fontWeight: 700
               }}
             >
               {link.name}

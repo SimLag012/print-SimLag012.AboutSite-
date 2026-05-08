@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Projects from './components/Projects'
 import About from './components/About'
+import Architecture from './components/Architecture'
 import Background3D from './components/Background3D'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -17,7 +18,7 @@ function Loader() {
         left: 0,
         width: '100%',
         height: '100%',
-        background: '#030303',
+        background: '#010101',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -25,18 +26,24 @@ function Loader() {
         zIndex: 9999
       }}
     >
-      <h1 className="glitch" data-text="INITIALIZING" style={{
-        fontFamily: 'Orbitron, sans-serif',
-        fontSize: '1.5rem',
-        marginBottom: '20px'
-      }}>
-        INITIALIZING
-      </h1>
+      <motion.h1 
+        className="glitch" 
+        data-text="SYSTEM_BOOT" 
+        style={{
+          fontFamily: 'Orbitron, sans-serif',
+          fontSize: '1.5rem',
+          marginBottom: '20px',
+          color: '#fff'
+        }}
+      >
+        SYSTEM_BOOT
+      </motion.h1>
       <div style={{
         width: '200px',
         height: '2px',
-        background: 'rgba(255,255,255,0.1)',
-        overflow: 'hidden'
+        background: 'rgba(255,255,255,0.05)',
+        overflow: 'hidden',
+        border: '1px solid rgba(255,255,255,0.1)'
       }}>
         <motion.div
           initial={{ width: 0 }}
@@ -49,6 +56,14 @@ function Loader() {
           }}
         />
       </div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        style={{ marginTop: '20px', fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}
+      >
+        Loading core logic...
+      </motion.p>
     </motion.div>
   )
 }
@@ -74,19 +89,23 @@ function App() {
       
       <main>
         <Hero />
-        <Projects />
         <About />
+        <Architecture />
+        <Projects />
         
         <footer style={{
-          padding: '50px',
+          padding: '100px 50px',
           textAlign: 'center',
           color: 'var(--text-muted)',
           fontSize: '0.8rem',
-          letterSpacing: '1px',
+          letterSpacing: '2px',
           borderTop: '1px solid var(--glass-border)',
-          background: 'rgba(0,0,0,0.5)'
+          background: 'rgba(0,0,0,0.8)',
+          position: 'relative',
+          zIndex: 10
         }}>
-          <p>&copy; 2026 SIMO. Creato con passione, codice e React Three Fiber.</p>
+          <div style={{ marginBottom: '20px', color: 'var(--primary)', fontWeight: 900, fontSize: '1.2rem' }}>SimLag012</div>
+          <p>&copy; 2026 Simone. Built for performance, not for show.</p>
         </footer>
       </main>
     </>
