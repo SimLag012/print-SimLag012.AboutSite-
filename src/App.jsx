@@ -15,7 +15,6 @@ gsap.registerPlugin(ScrollTrigger);
 function App() {
   const [loading, setLoading] = useState(true)
   const [scrollProgress, setScrollProgress] = useState(0)
-  const lenisRef = useRef(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,20 +25,16 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      // Initialize Lenis Smooth Scroll
+      // Initialize Lenis with more "Rebounce"
       const lenis = new Lenis({
-        duration: 1.5,
+        duration: 2, // Lungo per sentire il bounce
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
-        wheelMultiplier: 1,
-        smoothTouch: false,
-        touchMultiplier: 2,
-        infinite: false,
+        wheelMultiplier: 1.1,
+        lerp: 0.05, // Fattore di inerzia
       })
-
-      lenisRef.current = lenis
 
       function raf(time) {
         lenis.raf(time)
@@ -50,18 +45,15 @@ function App() {
 
       lenis.on('scroll', (e) => {
         setScrollProgress(e.progress)
+        ScrollTrigger.update()
       })
 
-      // Sync with GSAP ScrollTrigger
-      lenis.on('scroll', ScrollTrigger.update)
       gsap.ticker.add((time) => {
         lenis.raf(time * 1000)
       })
-      gsap.ticker.lagSmoothing(0)
 
       return () => {
         lenis.destroy()
-        gsap.ticker.remove(raf)
       }
     }
   }, [loading])
@@ -85,7 +77,7 @@ function App() {
             }}
           >
             <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '20px', letterSpacing: '4px' }}>
-              REBOOTING_SYSTEM_V3
+              INITIALIZING_SYSTEM_CORE
             </div>
             <div style={{ width: '200px', height: '1px', background: '#222', overflow: 'hidden' }}>
               <motion.div 
@@ -99,10 +91,16 @@ function App() {
         )}
       </AnimatePresence>
       
+      {/* Background sempre cliccabile */}
       <Background3D scrollProgress={scrollProgress} />
+      
       <Navbar />
       
-      <main style={{ position: 'relative', zIndex: 1 }}>
+      <main style={{ 
+        position: 'relative', 
+        zIndex: 1, 
+        pointerEvents: 'none' // Lascia passare il mouse allo sfondo
+      }}>
         <Hero />
         <About />
         <Architecture />
@@ -117,19 +115,21 @@ function App() {
           fontSize: '0.6rem',
           fontFamily: 'JetBrains Mono, monospace',
           textTransform: 'uppercase',
-          letterSpacing: '2px'
+          letterSpacing: '2px',
+          pointerEvents: 'all'
         }}>
           <div>
-            [SIMONE] // BACKEND_ARCHITECT<br/>
-            [BUILD] // 2026_FINAL
+            [SIMONE] // CORE_ARCHITECT<br/>
+            [STABILITY] // OPTIMAL
           </div>
           <div>
             &copy; SIMLAG012_SYSTEMS<br/>
-            HYPER_SMOOTH_ENGAGED
+            REBOUNCE_ENABLED
           </div>
         </footer>
       </main>
 
+      {/* Status HUD */}
       <div style={{
         position: 'fixed',
         bottom: '40px',
@@ -137,8 +137,8 @@ function App() {
         zIndex: 100,
         pointerEvents: 'none'
       }} className="hud-text">
-        <div style={{ color: '#fff', marginBottom: '5px' }}>Status: Optimal</div>
-        <div style={{ opacity: 0.5 }}>Buffer_Health: {(scrollProgress * 100).toFixed(1)}%</div>
+        <div style={{ color: '#fff', marginBottom: '5px' }}>Status: Live</div>
+        <div style={{ opacity: 0.5 }}>Inertia_Level: 0.05 (Smoothed)</div>
       </div>
     </>
   )
