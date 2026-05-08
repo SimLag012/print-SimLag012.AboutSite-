@@ -25,15 +25,15 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      // Initialize Lenis with more "Rebounce"
+      // Lenis initialization
       const lenis = new Lenis({
-        duration: 2, // Lungo per sentire il bounce
+        duration: 1.5,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
-        wheelMultiplier: 1.1,
-        lerp: 0.05, // Fattore di inerzia
+        wheelMultiplier: 1.2,
+        lerp: 0.1,
       })
 
       function raf(time) {
@@ -48,12 +48,14 @@ function App() {
         ScrollTrigger.update()
       })
 
+      // Sync GSAP ticker
       gsap.ticker.add((time) => {
         lenis.raf(time * 1000)
       })
 
       return () => {
         lenis.destroy()
+        gsap.ticker.remove(lenis.raf)
       }
     }
   }, [loading])
@@ -77,7 +79,7 @@ function App() {
             }}
           >
             <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '20px', letterSpacing: '4px' }}>
-              INITIALIZING_SYSTEM_CORE
+              RESTORING_VISUAL_CORE
             </div>
             <div style={{ width: '200px', height: '1px', background: '#222', overflow: 'hidden' }}>
               <motion.div 
@@ -91,7 +93,7 @@ function App() {
         )}
       </AnimatePresence>
       
-      {/* Background sempre cliccabile */}
+      {/* Background with explicit transparency and Z-index */}
       <Background3D scrollProgress={scrollProgress} />
       
       <Navbar />
@@ -99,7 +101,8 @@ function App() {
       <main style={{ 
         position: 'relative', 
         zIndex: 1, 
-        pointerEvents: 'none' // Lascia passare il mouse allo sfondo
+        pointerEvents: 'none',
+        background: 'transparent' // Assicuriamoci che sia trasparente
       }}>
         <Hero />
         <About />
@@ -119,27 +122,15 @@ function App() {
           pointerEvents: 'all'
         }}>
           <div>
-            [SIMONE] // CORE_ARCHITECT<br/>
-            [STABILITY] // OPTIMAL
+            [SIMONE] // VISUAL_FIX_DEPLOYED<br/>
+            [MODULE] // REBORN
           </div>
           <div>
             &copy; SIMLAG012_SYSTEMS<br/>
-            REBOUNCE_ENABLED
+            ALL_SYSTEMS_GO
           </div>
         </footer>
       </main>
-
-      {/* Status HUD */}
-      <div style={{
-        position: 'fixed',
-        bottom: '40px',
-        left: '5%',
-        zIndex: 100,
-        pointerEvents: 'none'
-      }} className="hud-text">
-        <div style={{ color: '#fff', marginBottom: '5px' }}>Status: Live</div>
-        <div style={{ opacity: 0.5 }}>Inertia_Level: 0.05 (Smoothed)</div>
-      </div>
     </>
   )
 }

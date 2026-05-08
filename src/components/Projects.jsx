@@ -42,7 +42,7 @@ const projects = [
 
 export default function Projects() {
   return (
-    <section id="projects" style={{ padding: '100px 5%' }}>
+    <section id="projects" style={{ padding: '100px 5%', background: 'transparent' }}>
       <div style={{ width: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '80px' }}>
           <div>
@@ -56,18 +56,19 @@ export default function Projects() {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
           gap: '1px',
-          background: 'var(--hud-border)'
+          background: 'rgba(255,255,255,0.05)' // Trasparente invece che solido
         }}>
           {projects.map((project) => (
             <motion.div
               key={project.id}
               whileHover={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
               style={{
-                background: '#050505',
+                background: 'rgba(5,5,5,0.8)', // Semi-trasparente
                 padding: '60px 40px',
                 position: 'relative',
                 cursor: 'pointer',
-                transition: '0.3s'
+                transition: '0.3s',
+                pointerEvents: 'all'
               }}
             >
               <div className="hud-text" style={{ color: 'var(--primary)', marginBottom: '30px' }}>ID_{project.id}</div>
