@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Code } from 'lucide-react';
 
 const projects = [
   {
@@ -148,7 +148,7 @@ export default function Projects() {
                   whileHover={{ color: 'var(--primary)' }}
                   style={{ color: 'var(--text)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.9rem', fontWeight: 700 }}
                 >
-                  <Github size={18} /> CODE
+                  <Code size={18} /> CODE
                 </motion.a>
               </div>
             </div>
