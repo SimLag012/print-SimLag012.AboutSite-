@@ -62,7 +62,7 @@ function Loader() {
         transition={{ delay: 0.5 }}
         style={{ marginTop: '20px', fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}
       >
-        Loading core logic...
+        Synchronizing core logic...
       </motion.p>
     </motion.div>
   )
@@ -105,7 +105,7 @@ function App() {
           zIndex: 10
         }}>
           <div style={{ marginBottom: '20px', color: 'var(--primary)', fontWeight: 900, fontSize: '1.2rem' }}>SimLag012</div>
-          <p>&copy; 2026 Simone. Built for performance, not for show.</p>
+          <p>&copy; 2026 Simone. Built for performance, architected for the future.</p>
         </footer>
       </main>
     </>

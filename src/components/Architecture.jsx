@@ -20,7 +20,7 @@ const Node = ({ icon: Icon, label, x, y, delay }) => (
     <div style={{
       width: '60px',
       height: '60px',
-      background: 'rgba(0,242,255,0.1)',
+      background: 'rgba(0,242,255,0.05)',
       border: '1px solid var(--primary)',
       borderRadius: '10px',
       display: 'flex',
@@ -31,7 +31,7 @@ const Node = ({ icon: Icon, label, x, y, delay }) => (
     }}>
       <Icon size={30} />
     </div>
-    <span style={{ fontSize: '0.7rem', color: '#fff', fontWeight: 700, textTransform: 'uppercase' }}>{label}</span>
+    <span style={{ fontSize: '0.65rem', color: '#fff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</span>
   </motion.div>
 );
 
@@ -56,16 +56,16 @@ export default function Architecture() {
   return (
     <section id="architecture" style={{ height: '600px', padding: '100px 10%', position: 'relative' }}>
       <div style={{ textAlign: 'center', marginBottom: '100px' }}>
-        <h2 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '2rem', fontWeight: 900 }}>SYSTEM ARCHITECTURE</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Visualizzazione del flusso logico dei miei sistemi</p>
+        <h2 style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '2.5rem', fontWeight: 900 }}>SYSTEM ARCHITECTURE</h2>
+        <p style={{ color: 'var(--text-muted)', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.8rem' }}>Visualizing core logical flows</p>
       </div>
 
       <div style={{ position: 'relative', height: '300px', width: '100%' }}>
-        <Node icon={Server} label="Nginx Reverse Proxy" x={10} y={40} delay={0.2} />
-        <Node icon={Lock} label="Auth Guard (HWID)" x={30} y={40} delay={0.4} />
-        <Node icon={Zap} label="Core API (FastAPI)" x={50} y={40} delay={0.6} />
+        <Node icon={Server} label="Nginx Proxy" x={10} y={40} delay={0.2} />
+        <Node icon={Lock} label="Auth Guard" x={30} y={40} delay={0.4} />
+        <Node icon={Zap} label="Core API" x={50} y={40} delay={0.6} />
         <Node icon={Share2} label="Redis Cache" x={70} y={20} delay={0.8} />
-        <Node icon={Database} label="PostgreSQL Core" x={70} y={60} delay={1.0} />
+        <Node icon={Database} label="PostgreSQL" x={70} y={60} delay={1.0} />
 
         <Connection x1={13} y1={45} x2={30} y2={45} delay={0.5} />
         <Connection x1={33} y1={45} x2={50} y2={45} delay={0.7} />

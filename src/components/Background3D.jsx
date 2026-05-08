@@ -1,15 +1,20 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Stars, MeshDistortMaterial, Sphere, Grid, PerspectiveCamera } from '@react-three/drei';
 import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 
 function CoreSphere() {
   const meshRef = useRef();
+  const { mouse } = useThree();
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
     meshRef.current.rotation.x = time * 0.1;
     meshRef.current.rotation.y = time * 0.15;
+    
+    // Slight mouse follow
+    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, mouse.x * 2, 0.1);
+    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, mouse.y * 2, 0.1);
   });
 
   return (
@@ -30,8 +35,9 @@ function CoreSphere() {
   );
 }
 
-function FloatingCubes({ count = 20 }) {
+function FloatingCubes({ count = 40 }) {
   const meshRef = useRef();
+  const { mouse } = useThree();
   
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const particles = useMemo(() => {
@@ -43,7 +49,7 @@ function FloatingCubes({ count = 20 }) {
       const xFactor = -50 + Math.random() * 100;
       const yFactor = -50 + Math.random() * 100;
       const zFactor = -50 + Math.random() * 100;
-      temp.push({ t, factor, speed, xFactor, yFactor, zFactor, mx: 0, my: 0 });
+      temp.push({ t, factor, speed, xFactor, yFactor, zFactor });
     }
     return temp;
   }, [count]);
@@ -57,9 +63,9 @@ function FloatingCubes({ count = 20 }) {
       const s = Math.cos(t);
       
       dummy.position.set(
-        (particle.mx / 10) * a + xFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 1) * factor) / 10,
-        (particle.my / 10) * b + yFactor + Math.sin((t / 10) * factor) + (Math.cos(t * 2) * factor) / 10,
-        (particle.my / 10) * b + zFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 3) * factor) / 10
+        xFactor + Math.cos((t / 10) * factor) + (mouse.x * 10),
+        yFactor + Math.sin((t / 10) * factor) + (mouse.y * 10),
+        zFactor + Math.cos((t / 10) * factor)
       );
       dummy.rotation.set(s * 5, s * 5, s * 5);
       dummy.scale.set(s, s, s);
@@ -79,7 +85,7 @@ function FloatingCubes({ count = 20 }) {
 
 export default function Background3D() {
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: -1, background: '#020202' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: -1, background: '#010101' }}>
       <Canvas>
         <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={75} />
         <ambientLight intensity={0.4} />
@@ -87,7 +93,7 @@ export default function Background3D() {
         <pointLight position={[-10, -10, -10]} intensity={1} color="#bc00ff" />
         
         <CoreSphere />
-        <FloatingCubes count={40} />
+        <FloatingCubes count={50} />
         
         <Grid 
           infiniteGrid 
@@ -102,7 +108,7 @@ export default function Background3D() {
         
         <Stars radius={100} depth={50} count={7000} factor={4} saturation={0} fade speed={1} />
         
-        <fog attach="fog" args={['#020202', 5, 25]} />
+        <fog attach="fog" args={['#010101', 5, 25]} />
       </Canvas>
     </div>
   );

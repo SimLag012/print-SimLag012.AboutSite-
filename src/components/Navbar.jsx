@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 export default function Navbar() {
   const navLinks = [
     { name: 'Home', href: '#home' },
-    { name: 'Sistemi', href: '#projects' },
+    { name: 'Systems', href: '#projects' },
     { name: 'Core', href: '#about' },
-    { name: 'Signal', href: '#contact' },
+    { name: 'Architecture', href: '#architecture' },
   ];
 
   return (
@@ -17,7 +17,7 @@ export default function Navbar() {
         position: 'fixed',
         top: 0,
         width: '100%',
-        padding: '2rem 5%',
+        padding: '1.5rem 5%',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

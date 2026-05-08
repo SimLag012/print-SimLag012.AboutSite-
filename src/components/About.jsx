@@ -22,7 +22,7 @@ export default function About() {
             fontSize: '3.5rem',
             marginBottom: '40px',
             fontWeight: 900
-          }}>IL MIO CORE</h2>
+          }}>MY CORE</h2>
           
           <p style={{
             color: 'var(--text-muted)',
@@ -30,10 +30,10 @@ export default function About() {
             lineHeight: '1.9',
             marginBottom: '30px'
           }}>
-            Mi chiamo <span style={{ color: '#fff', fontWeight: 600 }}>Simone</span>. 
-            Il mio mondo inizia dove finisce l'interfaccia utente. 
-            Il frontend è solo la pelle, ma io mi occupo degli organi e del sistema nervoso: 
-            <span style={{ color: 'var(--primary)' }}> la logica del backend</span>.
+            I am <span style={{ color: '#fff', fontWeight: 600 }}>Simone</span>. 
+            My work begins where the user interface ends. 
+            While others focus on the skin, I build the nervous system and organs: 
+            <span style={{ color: 'var(--primary)' }}> pure backend logic</span>.
           </p>
 
           <p style={{
@@ -42,9 +42,9 @@ export default function About() {
             lineHeight: '1.9',
             marginBottom: '50px'
           }}>
-            Non mi interessa creare bottoni colorati o layout responsivi. 
-            Il mio obiettivo è l'efficienza pura, la scalabilità orizzontale e la sicurezza dei dati. 
-            Se un sistema non è ottimizzato a livello di microsecondi, non è ancora finito.
+            I have zero interest in colorful buttons or responsive layouts for their own sake. 
+            My goals are absolute efficiency, horizontal scalability, and data integrity. 
+            If a system isn't optimized at the microsecond level, it isn't finished.
           </p>
 
           <div style={{
@@ -99,7 +99,7 @@ export default function About() {
           <motion.div 
             animate={{ opacity: [1, 0] }} 
             transition={{ repeat: Infinity, duration: 0.8 }}
-            style={{ width: '10px', height: '20px', background: 'var(--primary)' }}
+            style={{ width: '100%', height: '2px', background: 'var(--primary)', marginTop: '20px' }}
           />
         </motion.div>
       </div>

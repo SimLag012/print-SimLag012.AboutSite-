@@ -41,7 +41,7 @@ export default function Hero() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
           <div style={{ width: '40px', height: '2px', background: 'var(--primary)' }}></div>
           <h2 style={{
             fontSize: '1rem',
@@ -73,9 +73,9 @@ export default function Hero() {
           fontWeight: 300,
           fontFamily: 'Inter, sans-serif'
         }}>
-          Specializzato in <span style={{ color: '#fff', fontWeight: 600 }}>architetture scalabili</span>, 
-          sicurezza di basso livello e <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>sistemi core</span>. 
-          Ignoro il superfluo per concentrarmi sulla pura logica del backend.
+          I architect <span style={{ color: '#fff', fontWeight: 600 }}>scalable backends</span>, 
+          low-level security protocols, and <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>core systems</span>. 
+          Focusing strictly on performance and logic.
         </p>
 
         <div style={{ display: 'flex', gap: '30px' }}>
@@ -119,17 +119,6 @@ export default function Hero() {
           </motion.a>
         </div>
       </motion.div>
-
-      {/* Decorative vertical lines */}
-      <div style={{
-        position: 'absolute',
-        right: '5%',
-        top: '20%',
-        height: '60%',
-        width: '1px',
-        background: 'linear-gradient(to bottom, transparent, var(--primary), transparent)',
-        opacity: 0.3
-      }}></div>
     </section>
   );
 }
