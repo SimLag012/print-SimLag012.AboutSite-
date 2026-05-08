@@ -1,114 +1,116 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Stars, MeshDistortMaterial, Sphere, Grid, PerspectiveCamera } from '@react-three/drei';
-import { useRef, useMemo } from 'react';
+import { Float, Stars, MeshDistortMaterial, Sphere, Grid, PerspectiveCamera, Environment, Center } from '@react-three/drei';
+import { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
+import gsap from 'gsap';
 
-function CoreSphere() {
+function TechCore({ scrollProgress }) {
+  const groupRef = useRef();
+  const count = 64;
   const meshRef = useRef();
-  const { mouse } = useThree();
+  
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const positions = useMemo(() => {
+    const p = [];
+    for (let i = 0; i < count; i++) {
+      p.push({
+        x: (Math.random() - 0.5) * 4,
+        y: (Math.random() - 0.5) * 4,
+        z: (Math.random() - 0.5) * 4,
+        rot: Math.random() * Math.PI
+      });
+    }
+    return p;
+  }, []);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
-    meshRef.current.rotation.x = time * 0.1;
-    meshRef.current.rotation.y = time * 0.15;
     
-    // Slight mouse follow
-    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, mouse.x * 2, 0.1);
-    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, mouse.y * 2, 0.1);
-  });
-
-  return (
-    <Float speed={3} rotationIntensity={2} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[1, 64, 64]} scale={2}>
-        <MeshDistortMaterial
-          color="#00f2ff"
-          attach="material"
-          distort={0.5}
-          speed={2}
-          roughness={0}
-          metalness={1}
-          emissive="#00f2ff"
-          emissiveIntensity={0.2}
-        />
-      </Sphere>
-    </Float>
-  );
-}
-
-function FloatingCubes({ count = 40 }) {
-  const meshRef = useRef();
-  const { mouse } = useThree();
-  
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const particles = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < count; i++) {
-      const t = Math.random() * 100;
-      const factor = 20 + Math.random() * 100;
-      const speed = 0.01 + Math.random() / 200;
-      const xFactor = -50 + Math.random() * 100;
-      const yFactor = -50 + Math.random() * 100;
-      const zFactor = -50 + Math.random() * 100;
-      temp.push({ t, factor, speed, xFactor, yFactor, zFactor });
-    }
-    return temp;
-  }, [count]);
-
-  useFrame((state) => {
-    particles.forEach((particle, i) => {
-      let { t, factor, speed, xFactor, yFactor, zFactor } = particle;
-      t = particle.t += speed / 2;
-      const a = Math.cos(t) + Math.sin(t * 1) / 10;
-      const b = Math.sin(t) + Math.cos(t * 2) / 10;
-      const s = Math.cos(t);
+    positions.forEach((p, i) => {
+      // Calculate expansion based on scroll
+      const expansion = scrollProgress * 15;
       
-      dummy.position.set(
-        xFactor + Math.cos((t / 10) * factor) + (mouse.x * 10),
-        yFactor + Math.sin((t / 10) * factor) + (mouse.y * 10),
-        zFactor + Math.cos((t / 10) * factor)
-      );
-      dummy.rotation.set(s * 5, s * 5, s * 5);
-      dummy.scale.set(s, s, s);
+      // Normal circular position
+      const phi = Math.acos(-1 + (2 * i) / count);
+      const theta = Math.sqrt(count * Math.PI) * phi;
+      
+      const targetX = Math.cos(theta) * Math.sin(phi) * (2 + expansion);
+      const targetY = Math.sin(theta) * Math.sin(phi) * (2 + expansion);
+      const targetZ = Math.cos(phi) * (2 + expansion);
+
+      dummy.position.set(targetX, targetY, targetZ);
+      dummy.rotation.set(time * 0.2 + p.rot, time * 0.3, 0);
+      dummy.scale.setScalar(0.4 * (1 - scrollProgress * 0.5));
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
+    
     meshRef.current.instanceMatrix.needsUpdate = true;
+    groupRef.current.rotation.y += 0.002;
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[null, null, count]}>
-      <boxGeometry args={[0.5, 0.5, 0.5]} />
-      <meshStandardMaterial color="#bc00ff" transparent opacity={0.3} />
-    </instancedMesh>
+    <group ref={groupRef}>
+      <instancedMesh ref={meshRef} args={[null, null, count]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="#fff" metalness={0.8} roughness={0.1} transparent opacity={0.8} />
+      </instancedMesh>
+      
+      {/* Central Light Core */}
+      <Sphere args={[1.5, 32, 32]}>
+        <meshBasicMaterial color="#00f2ff" transparent opacity={0.1 * (1 - scrollProgress)} />
+      </Sphere>
+    </group>
   );
 }
 
-export default function Background3D() {
+function HudLines() {
+  const { mouse } = useThree();
+  const lineRef = useRef();
+
+  useFrame(() => {
+    if (lineRef.current) {
+      lineRef.current.rotation.y = THREE.MathUtils.lerp(lineRef.current.rotation.y, mouse.x * 0.5, 0.05);
+      lineRef.current.rotation.x = THREE.MathUtils.lerp(lineRef.current.rotation.x, -mouse.y * 0.5, 0.05);
+    }
+  });
+
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: -1, background: '#010101' }}>
-      <Canvas>
-        <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={75} />
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={2} color="#00f2ff" />
-        <pointLight position={[-10, -10, -10]} intensity={1} color="#bc00ff" />
+    <group ref={lineRef}>
+      <Grid 
+        infiniteGrid 
+        fadeDistance={50} 
+        fadeStrength={5} 
+        cellSize={1} 
+        sectionSize={5} 
+        sectionColor="#ffffff" 
+        cellColor="#222222" 
+        position={[0, -10, 0]} 
+        rotation={[Math.PI / 2, 0, 0]}
+        opacity={0.1}
+      />
+    </group>
+  );
+}
+
+export default function Background3D({ scrollProgress = 0 }) {
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: -1 }}>
+      <Canvas shadows gl={{ antialias: true }}>
+        <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={50} />
+        <color attach="background" args={['#050505']} />
         
-        <CoreSphere />
-        <FloatingCubes count={50} />
+        <ambientLight intensity={0.2} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} castShadow />
+        <pointLight position={[-10, -10, -10]} color="#00f2ff" intensity={1} />
         
-        <Grid 
-          infiniteGrid 
-          fadeDistance={30} 
-          fadeStrength={5} 
-          sectionSize={3} 
-          cellSize={1} 
-          sectionColor="#00f2ff" 
-          cellColor="#333" 
-          position={[0, -5, 0]}
-        />
+        <TechCore scrollProgress={scrollProgress} />
+        <HudLines />
         
-        <Stars radius={100} depth={50} count={7000} factor={4} saturation={0} fade speed={1} />
+        <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
+        <Environment preset="city" />
         
-        <fog attach="fog" args={['#010101', 5, 25]} />
+        <fog attach="fog" args={['#050505', 10, 40]} />
       </Canvas>
     </div>
   );

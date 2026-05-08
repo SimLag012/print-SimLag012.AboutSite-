@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Orbitron:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap');
 
 :root {
-  --bg: #010101;
-  --primary: #00f2ff;
-  --secondary: #bc00ff;
-  --accent: #ffc400;
+  --bg: #0a0a0a;
+  --bg-alt: #050505;
+  --primary: #ffffff;
+  --secondary: #00f2ff;
+  --accent: #bc00ff;
   --text: #ffffff;
-  --text-muted: #888888;
+  --text-muted: #666666;
+  --hud-border: rgba(255, 255, 255, 0.1);
   --glass: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --accent-glow: 0 0 30px rgba(0, 242, 255, 0.2);
 }
 
 * {
@@ -26,89 +26,59 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  pointer-events: none;
+code, .mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
-/* Scrollbar */
+/* Scrollbar Hide but functional */
 ::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--glass-border);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  width: 0px;
 }
 
-/* Glitch Utility */
-.glitch {
-  position: relative;
-  display: inline-block;
+/* HUD Typography */
+.hud-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
 }
 
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--bg);
+.hud-label {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  letter-spacing: 4px;
 }
 
-.glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 var(--primary);
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
-}
-
-.glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 var(--secondary);
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-  0% { clip: rect(31px, 9999px, 94px, 0); }
-  20% { clip: rect(62px, 9999px, 42px, 0); }
-  40% { clip: rect(82px, 9999px, 31px, 0); }
-  60% { clip: rect(10px, 9999px, 86px, 0); }
-  80% { clip: rect(57px, 9999px, 98px, 0); }
-  100% { clip: rect(24px, 9999px, 63px, 0); }
-}
-
-@keyframes glitch-anim2 {
-  0% { clip: rect(10px, 9999px, 86px, 0); }
-  20% { clip: rect(57px, 9999px, 98px, 0); }
-  40% { clip: rect(24px, 9999px, 63px, 0); }
-  60% { clip: rect(31px, 9999px, 94px, 0); }
-  80% { clip: rect(62px, 9999px, 42px, 0); }
-  100% { clip: rect(82px, 9999px, 31px, 0); }
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
-}
-
-.float {
-  animation: float 6s ease-in-out infinite;
-}
-
+/* Fullscreen Sections */
 section {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
   position: relative;
-  overflow: hidden;
+  pointer-events: none; /* Allow interaction with 3D scene */
+}
+
+section > * {
+  pointer-events: all; /* Re-enable for content */
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.glass-hud {
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--hud-border);
+  padding: 20px;
 }

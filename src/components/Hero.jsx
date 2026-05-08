@@ -28,95 +28,60 @@ const ScrambleText = ({ text }) => {
 
 export default function Hero() {
   return (
-    <section id="home" style={{
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      padding: '0 10%',
-      position: 'relative'
-    }}>
+    <section id="home">
       <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
+        style={{ width: '100%' }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
-          <div style={{ width: '40px', height: '2px', background: 'var(--primary)' }}></div>
-          <h2 style={{
-            fontSize: '1rem',
-            color: 'var(--primary)',
-            textTransform: 'uppercase',
-            letterSpacing: '6px',
-            fontWeight: 700
-          }}>Systems & Backend Engineer</h2>
+        <div style={{ marginBottom: '2rem' }} className="hud-text">
+          [System_Init] // Core_Systems_Online
         </div>
         
         <h1 style={{
-          fontFamily: 'Orbitron, sans-serif',
-          fontSize: 'clamp(3rem, 12vw, 9rem)',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: 'clamp(3rem, 15vw, 12rem)',
           fontWeight: 900,
-          lineHeight: 0.9,
+          lineHeight: 0.8,
           marginBottom: '2rem',
           color: '#fff',
-          textTransform: 'uppercase'
+          textTransform: 'uppercase',
+          letterSpacing: '-0.05em'
         }}>
-          <ScrambleText text="SimLag012" />
+          SimLag<br/>012
         </h1>
         
-        <p style={{
-          fontSize: '1.4rem',
-          color: 'var(--text-muted)',
-          lineHeight: 1.5,
-          maxWidth: '700px',
-          marginBottom: '4rem',
-          fontWeight: 300,
-          fontFamily: 'Inter, sans-serif'
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          borderTop: '1px solid var(--hud-border)',
+          paddingTop: '2rem',
+          marginTop: '4rem'
         }}>
-          I architect <span style={{ color: '#fff', fontWeight: 600 }}>scalable backends</span>, 
-          low-level security protocols, and <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>core systems</span>. 
-          Focusing strictly on performance and logic.
-        </p>
-
-        <div style={{ display: 'flex', gap: '30px' }}>
-          <motion.a 
-            href="#projects" 
-            whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(0,242,255,0.4)' }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              padding: '20px 50px',
-              background: 'var(--primary)',
-              color: '#000',
-              textDecoration: 'none',
-              fontWeight: 900,
-              borderRadius: '2px',
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-              fontSize: '0.8rem'
-            }}
-          >
-            Access Core
-          </motion.a>
+          <p style={{
+            fontSize: '1rem',
+            color: 'var(--text-muted)',
+            lineHeight: 1.5,
+            maxWidth: '400px',
+            fontFamily: 'JetBrains Mono, monospace',
+            textTransform: 'uppercase'
+          }}>
+            Architecting <span style={{ color: '#fff' }}>high-performance</span> backends, 
+            low-level protocols, and <span style={{ color: '#fff' }}>scalable</span> infrastructure.
+          </p>
           
-          <motion.a 
-            href="#about" 
-            whileHover={{ scale: 1.05, borderColor: 'var(--primary)' }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              padding: '20px 50px',
-              background: 'transparent',
-              border: '1px solid var(--glass-border)',
-              color: '#fff',
-              textDecoration: 'none',
-              fontWeight: 900,
-              borderRadius: '2px',
-              textTransform: 'uppercase',
-              letterSpacing: '2px',
-              fontSize: '0.8rem'
-            }}
-          >
-            Diagnostics
-          </motion.a>
+          <div style={{ display: 'flex', gap: '40px' }} className="hud-text">
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ color: '#fff' }}>Location</div>
+              <div>Global_Node_IAD1</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ color: '#fff' }}>Focus</div>
+              <div>Backend_Logic</div>
+            </div>
+          </div>
         </div>
       </motion.div>
     </section>

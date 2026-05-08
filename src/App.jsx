@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Projects from './components/Projects'
@@ -6,108 +6,132 @@ import About from './components/About'
 import Architecture from './components/Architecture'
 import Background3D from './components/Background3D'
 import { motion, AnimatePresence } from 'framer-motion'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-function Loader() {
-  return (
-    <motion.div
-      exit={{ y: '-100%' }}
-      transition={{ duration: 1, ease: 'expoInOut' }}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        background: '#010101',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 9999
-      }}
-    >
-      <motion.h1 
-        className="glitch" 
-        data-text="SYSTEM_BOOT" 
-        style={{
-          fontFamily: 'Orbitron, sans-serif',
-          fontSize: '1.5rem',
-          marginBottom: '20px',
-          color: '#fff'
-        }}
-      >
-        SYSTEM_BOOT
-      </motion.h1>
-      <div style={{
-        width: '200px',
-        height: '2px',
-        background: 'rgba(255,255,255,0.05)',
-        overflow: 'hidden',
-        border: '1px solid rgba(255,255,255,0.1)'
-      }}>
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: '100%' }}
-          transition={{ duration: 1.5, ease: 'easeInOut' }}
-          style={{
-            height: '100%',
-            background: 'var(--primary)',
-            boxShadow: '0 0 15px var(--primary)'
-          }}
-        />
-      </div>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        style={{ marginTop: '20px', fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}
-      >
-        Synchronizing core logic...
-      </motion.p>
-    </motion.div>
-  )
-}
+gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [loading, setLoading] = useState(true)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const containerRef = useRef(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 2000)
+    }, 2500)
     return () => clearTimeout(timer)
   }, [])
+
+  useEffect(() => {
+    if (!loading) {
+      ScrollTrigger.create({
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+          setScrollProgress(self.progress)
+        }
+      });
+    }
+  }, [loading])
 
   return (
     <>
       <AnimatePresence>
-        {loading && <Loader />}
+        {loading && (
+          <motion.div
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: '#050505',
+              zIndex: 10000,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontFamily: 'JetBrains Mono, monospace'
+            }}
+          >
+            <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '20px', letterSpacing: '4px' }}>
+              BOOTING_CORE_V3.0
+            </div>
+            <div style={{ width: '200px', height: '1px', background: '#222', overflow: 'hidden' }}>
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: '100%' }}
+                transition={{ duration: 2 }}
+                style={{ height: '100%', background: '#fff' }} 
+              />
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
       
-      <Background3D />
+      <Background3D scrollProgress={scrollProgress} />
       <Navbar />
       
-      <main>
+      <main ref={containerRef} style={{ position: 'relative', zIndex: 1 }}>
         <Hero />
         <About />
         <Architecture />
         <Projects />
         
         <footer style={{
-          padding: '100px 50px',
-          textAlign: 'center',
-          color: 'var(--text-muted)',
-          fontSize: '0.8rem',
-          letterSpacing: '2px',
-          borderTop: '1px solid var(--glass-border)',
-          background: 'rgba(0,0,0,0.8)',
-          position: 'relative',
-          zIndex: 10
+          padding: '100px 5%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          color: '#444',
+          fontSize: '0.6rem',
+          fontFamily: 'JetBrains Mono, monospace',
+          textTransform: 'uppercase',
+          letterSpacing: '2px'
         }}>
-          <div style={{ marginBottom: '20px', color: 'var(--primary)', fontWeight: 900, fontSize: '1.2rem' }}>SimLag012</div>
-          <p>&copy; 2026 Simone. Built for performance, architected for the future.</p>
+          <div>
+            [SIMONE] // BACKEND_ENGINEER<br/>
+            [REVISION] // 2026.05.08
+          </div>
+          <div>
+            &copy; SIMLAG012_SYSTEMS<br/>
+            ALL_LOGIC_RESERVED
+          </div>
         </footer>
       </main>
+
+      {/* Persistent HUD elements */}
+      <div style={{
+        position: 'fixed',
+        bottom: '40px',
+        left: '5%',
+        zIndex: 100,
+        pointerEvents: 'none'
+      }} className="hud-text">
+        <div style={{ color: '#fff', marginBottom: '5px' }}>Status: Optimal</div>
+        <div style={{ opacity: 0.5 }}>Core_Load: {(scrollProgress * 100).toFixed(2)}%</div>
+      </div>
+      
+      <div style={{
+        position: 'fixed',
+        top: '50%',
+        right: '40px',
+        transform: 'translateY(-50%)',
+        zIndex: 100,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+        alignItems: 'flex-end'
+      }}>
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} style={{
+            width: '2px',
+            height: '40px',
+            background: scrollProgress > i * 0.25 ? '#fff' : '#222',
+            transition: '0.3s'
+          }} />
+        ))}
+      </div>
     </>
   )
 }
