@@ -1,82 +1,28 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Stars, Sphere, Grid, PerspectiveCamera, Environment } from '@react-three/drei';
+import { Stars, Float, MeshDistortMaterial, Sparkles, MeshWobbleMaterial } from '@react-three/drei';
+import { EffectComposer, Bloom, Vignette, Noise, ChromaticAberration } from '@react-three/postprocessing';
 import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 
-function TechCore({ scrollProgress, smoothMouse }) {
-  const groupRef = useRef();
+function InteractiveElements({ smoothScroll, smoothMouse }) {
   const meshRef = useRef();
-  const count = 64;
-  
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const positions = useMemo(() => {
-    const p = [];
-    for (let i = 0; i < count; i++) {
-      p.push({
-        phi: Math.acos(-1 + (2 * i) / count),
-        theta: Math.sqrt(count * Math.PI) * Math.acos(-1 + (2 * i) / count),
-        rot: Math.random() * Math.PI,
-        speed: 0.1 + Math.random() * 0.5
-      });
-    }
-    return p;
-  }, [count]);
-
-  useFrame((state) => {
-    if (!meshRef.current || !groupRef.current) return;
-    const time = state.clock.getElapsedTime();
-    
-    positions.forEach((p, i) => {
-      const expansion = scrollProgress * 15;
-      const targetX = Math.cos(p.theta) * Math.sin(p.phi) * (2 + expansion);
-      const targetY = Math.sin(p.theta) * Math.sin(p.phi) * (2 + expansion);
-      const targetZ = Math.cos(p.phi) * (2 + expansion);
-
-      const mouseFactor = (1 - scrollProgress) * 5;
-      dummy.position.set(
-        targetX + smoothMouse.current.x * mouseFactor * p.speed,
-        targetY + smoothMouse.current.y * mouseFactor * p.speed,
-        targetZ
-      );
-      
-      dummy.rotation.set(time * 0.1 + p.rot, time * 0.2, 0);
-      dummy.scale.setScalar(0.4 * (1 - scrollProgress * 0.5));
-      dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
-    });
-    
-    meshRef.current.instanceMatrix.needsUpdate = true;
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, smoothMouse.current.x * 0.3, 0.05);
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -smoothMouse.current.y * 0.3, 0.05);
-  });
-
-  return (
-    <group ref={groupRef}>
-      <instancedMesh ref={meshRef} args={[null, null, count]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#ffffff" metalness={1} roughness={0.1} transparent opacity={0.6} />
-      </instancedMesh>
-    </group>
-  );
-}
-
-function FloatingCubes({ count = 100, smoothMouse }) {
-  const meshRef = useRef();
+  const count = 160;
   const dummy = useMemo(() => new THREE.Object3D(), []);
   
   const particles = useMemo(() => {
     const temp = [];
     for (let i = 0; i < count; i++) {
+      const pos = new THREE.Vector3(
+        (Math.random() - 0.5) * 60,
+        (Math.random() - 0.5) * 60,
+        (Math.random() - 0.5) * 40
+      );
       temp.push({
-        pos: new THREE.Vector3(
-          (Math.random() - 0.5) * 50,
-          (Math.random() - 0.5) * 50,
-          (Math.random() - 0.5) * 20
-        ),
-        rotSpeed: Math.random() * 0.01,
-        floatSpeed: 0.005 + Math.random() * 0.005,
-        phase: Math.random() * Math.PI * 2,
-        scale: 0.1 + Math.random() * 0.2
+        basePos: pos.clone(),
+        velocity: new THREE.Vector3(),
+        currentPos: pos.clone(),
+        rotSpeed: Math.random() * 0.02,
+        scale: 0.2 + Math.random() * 0.4
       });
     }
     return temp;
@@ -85,87 +31,210 @@ function FloatingCubes({ count = 100, smoothMouse }) {
   useFrame((state) => {
     if (!meshRef.current) return;
     const time = state.clock.getElapsedTime();
-    
+    const scroll = smoothScroll.current;
+
     particles.forEach((p, i) => {
-      // Base floating motion
-      const floatX = Math.sin(time * p.floatSpeed + p.phase) * 1.5;
-      const floatY = Math.cos(time * p.floatSpeed + p.phase) * 1.5;
-      
-      const currentPos = new THREE.Vector3(
-        p.pos.x + floatX,
-        p.pos.y + floatY,
-        p.pos.z
-      );
+      // Smoother vortex math
+      const vortexRadius = 12 + Math.sin(time * 0.3 + i) * 3;
+      const vortexX = Math.cos(i * 0.1 + time * 0.8) * vortexRadius;
+      const vortexY = Math.sin(i * 0.1 + time * 0.8) * vortexRadius;
+      const vortexZ = (i - count/2) * 0.15;
 
-      // Magnetic Mouse Interaction
-      const mousePos = new THREE.Vector3(smoothMouse.current.x * 25, -smoothMouse.current.y * 15, 0);
-      const dist = currentPos.distanceTo(mousePos);
-      const force = Math.max(0, 15 - dist) * 0.5; // Force field radius 15
-      
-      const dir = new THREE.Vector3().subVectors(currentPos, mousePos).normalize();
-      currentPos.add(dir.multiplyScalar(force));
+      const targetX = THREE.MathUtils.lerp(p.basePos.x, vortexX, scroll);
+      const targetY = THREE.MathUtils.lerp(p.basePos.y, vortexY, scroll);
+      const targetZ = THREE.MathUtils.lerp(p.basePos.z, vortexZ, scroll);
 
-      dummy.position.copy(currentPos);
-      dummy.rotation.x += p.rotSpeed;
-      dummy.rotation.y += p.rotSpeed;
-      dummy.scale.setScalar(p.scale + Math.sin(time * 0.5 + p.phase) * 0.05);
+      const mouse3D = new THREE.Vector3(smoothMouse.current.x * 25, -smoothMouse.current.y * 18, 5);
+      const dist = p.currentPos.distanceTo(mouse3D);
+      const force = Math.max(0, 10 - dist) * 0.12;
+      const dir = new THREE.Vector3().subVectors(p.currentPos, mouse3D).normalize();
+      
+      p.velocity.add(dir.multiplyScalar(force));
+      p.velocity.x += (targetX - p.currentPos.x) * 0.03;
+      p.velocity.y += (targetY - p.currentPos.y) * 0.03;
+      p.velocity.z += (targetZ - p.currentPos.z) * 0.03;
+      
+      p.velocity.multiplyScalar(0.95);
+      p.currentPos.add(p.velocity);
+
+      dummy.position.copy(p.currentPos);
+      dummy.rotation.x += p.rotSpeed + p.velocity.x * 0.1;
+      dummy.rotation.y += p.rotSpeed + p.velocity.y * 0.1;
+      
+      const s = p.scale * (1 + force * 0.8);
+      dummy.scale.set(s, s, s);
+      
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
     });
+    
     meshRef.current.instanceMatrix.needsUpdate = true;
   });
 
   return (
     <instancedMesh ref={meshRef} args={[null, null, count]}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#444" metalness={1} roughness={0.2} transparent opacity={0.4} />
+      <meshStandardMaterial 
+        metalness={1} 
+        roughness={0.2} 
+        emissive="#00f2ff" 
+        emissiveIntensity={1}
+        transparent 
+        opacity={0.7} 
+      />
     </instancedMesh>
+  );
+}
+
+function HeroStructure({ smoothScroll }) {
+  const meshRef = useRef();
+  const innerRef = useRef();
+  
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime();
+    const scroll = smoothScroll.current;
+    if (meshRef.current) {
+      meshRef.current.rotation.y = t * 0.15 + scroll * Math.PI;
+      meshRef.current.rotation.z = Math.sin(t * 0.5) * 0.2;
+      meshRef.current.scale.setScalar(1.2 - scroll * 0.4);
+      meshRef.current.position.z = THREE.MathUtils.lerp(5, -10, scroll);
+    }
+    if (innerRef.current) {
+      innerRef.current.rotation.y = -t * 0.3;
+      innerRef.current.rotation.x = t * 0.2;
+    }
+  });
+
+  return (
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
+      <group ref={meshRef}>
+        <mesh>
+          <octahedronGeometry args={[4, 2]} />
+          <meshStandardMaterial 
+            color="#ffffff" 
+            wireframe 
+            transparent 
+            opacity={0.3} 
+            emissive="#00f2ff" 
+            emissiveIntensity={2}
+          />
+        </mesh>
+        <mesh ref={innerRef}>
+          <icosahedronGeometry args={[2, 0]} />
+          <MeshWobbleMaterial 
+            color="#050505"
+            emissive="#bc00ff"
+            emissiveIntensity={4}
+            factor={0.4} 
+            speed={2} 
+            metalness={1}
+            roughness={0}
+          />
+        </mesh>
+      </group>
+    </Float>
+  );
+}
+
+function DynamicGrid({ smoothScroll, smoothMouse }) {
+  const gridRef = useRef();
+  
+  useFrame(() => {
+    if (gridRef.current) {
+      gridRef.current.position.y = -14 + smoothScroll.current * 7;
+      gridRef.current.rotation.x = -Math.PI / 2 + smoothMouse.current.y * 0.2;
+      gridRef.current.rotation.z = smoothMouse.current.x * 0.2;
+    }
+  });
+
+  return (
+    <group ref={gridRef}>
+      <gridHelper args={[160, 80, "#333", "#111"]} opacity={0.2} transparent />
+    </group>
   );
 }
 
 export default function Background3D({ scrollProgress = 0 }) {
   const smoothMouse = useRef({ x: 0, y: 0 });
+  const smoothScroll = useRef(0);
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', zIndex: -1 }}>
-      <Canvas dpr={[1, 2]} gl={{ antialias: true }}>
-        <SceneController smoothMouse={smoothMouse} />
-        <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={50} />
-        <color attach="background" args={['#010101']} />
+    <div style={{ 
+      position: 'fixed', 
+      top: 0, 
+      left: 0, 
+      width: '100%', 
+      height: '100vh', 
+      zIndex: -1,
+      background: '#010103'
+    }}>
+      <Canvas 
+        dpr={[1, 2]} 
+        gl={{ 
+          antialias: true,
+          alpha: false,
+          powerPreference: "high-performance"
+        }}
+        camera={{ position: [0, 0, 35], fov: 45 }}
+      >
+        <color attach="background" args={['#010103']} />
+        <SceneController smoothMouse={smoothMouse} smoothScroll={smoothScroll} scrollProgress={scrollProgress} />
         
-        <ambientLight intensity={0.2} />
-        <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={2} />
-        <pointLight position={[-10, -10, -10]} color="#00f2ff" intensity={1} />
-        
-        <TechCore scrollProgress={scrollProgress} smoothMouse={smoothMouse} />
-        <FloatingCubes count={120} smoothMouse={smoothMouse} />
-        
-        <Grid 
-          infiniteGrid 
-          fadeDistance={50} 
-          fadeStrength={5} 
-          cellSize={1} 
-          sectionSize={10} 
-          sectionColor="#ffffff" 
-          cellColor="#050505" 
-          position={[0, -10, 0]} 
-          opacity={0.04}
-        />
-        
-        <Stars radius={100} depth={50} count={6000} factor={4} saturation={0} fade speed={1} />
-        <Environment preset="night" />
-        
-        <fog attach="fog" args={['#010101', 5, 40]} />
+        <SceneRotator smoothMouse={smoothMouse}>
+          <ambientLight intensity={1} />
+          <pointLight position={[20, 20, 20]} intensity={5} color="#00f2ff" />
+          <pointLight position={[-20, -20, 20]} intensity={5} color="#bc00ff" />
+
+          <InteractiveElements smoothScroll={smoothScroll} smoothMouse={smoothMouse} />
+          <HeroStructure smoothScroll={smoothScroll} />
+          <DynamicGrid smoothScroll={smoothScroll} smoothMouse={smoothMouse} />
+          
+          <Sparkles count={300} scale={70} size={3} speed={0.5} opacity={0.4} color="#00f2ff" />
+          <Stars radius={180} depth={50} count={6000} factor={6} saturation={0} fade speed={1.2} />
+        </SceneRotator>
+
+        <EffectComposer multisampling={4}>
+          <Bloom luminanceThreshold={0.1} mipmapBlur intensity={1.5} radius={0.4} />
+          <ChromaticAberration offset={[0.002, 0.002]} />
+          <Vignette eskil={false} offset={0.1} darkness={0.4} />
+          <Noise opacity={0.03} />
+        </EffectComposer>
+
+        <fog attach="fog" args={['#010103', 100, 250]} />
       </Canvas>
     </div>
   );
 }
 
-function SceneController({ smoothMouse }) {
+function SceneRotator({ children, smoothMouse }) {
+  const groupRef = useRef();
+  
+  useFrame(() => {
+    if (groupRef.current) {
+      // 3D Orbit feel: Rotate the entire group based on mouse
+      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, smoothMouse.current.x * 0.4, 0.05);
+      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -smoothMouse.current.y * 0.2, 0.05);
+    }
+  });
+  
+  return <group ref={groupRef}>{children}</group>;
+}
+
+
+function SceneController({ smoothMouse, smoothScroll, scrollProgress }) {
   const { mouse } = useThree();
   useFrame(() => {
-    smoothMouse.current.x = THREE.MathUtils.lerp(smoothMouse.current.x, mouse.x, 0.05);
-    smoothMouse.current.y = THREE.MathUtils.lerp(smoothMouse.current.y, mouse.y, 0.05);
+    // 1. Decoupled Smooth Scroll
+    smoothScroll.current = THREE.MathUtils.lerp(smoothScroll.current, scrollProgress, 0.05);
+    
+    // 2. Smooth Mouse
+    smoothMouse.current.x = THREE.MathUtils.lerp(smoothMouse.current.x, mouse.x, 0.04);
+    smoothMouse.current.y = THREE.MathUtils.lerp(smoothMouse.current.y, mouse.y, 0.04);
   });
   return null;
 }
+
+
+
+
+

@@ -51,7 +51,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="home" style={{ perspective: '1000px' }}>
+    <section id="hero" style={{ perspective: '1000px', height: '100vh', display: 'flex', alignItems: 'center', padding: '0 5%' }}>
       <motion.div
         style={{ 
           width: '100%',
@@ -64,13 +64,13 @@ export default function Hero() {
       >
         <div style={{ marginBottom: '2rem' }} className="hud-text">
           <motion.span animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, duration: 2 }}>
-            [System_Init] // Core_Systems_Online
+            [SYSTEM_INITIALIZATION] // CORE_KERNEL_STABLE
           </motion.span>
         </div>
         
         <h1 style={{
           fontFamily: 'Inter, sans-serif',
-          fontSize: 'clamp(3rem, 15vw, 12rem)',
+          fontSize: 'clamp(3rem, 12vw, 10rem)',
           fontWeight: 900,
           lineHeight: 0.8,
           marginBottom: '2rem',
@@ -78,37 +78,66 @@ export default function Hero() {
           textTransform: 'uppercase',
           letterSpacing: '-0.05em'
         }}>
-          SimLag<br/>012
+          <ScrambleText text="BACKEND" /><br/>
+          <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.3)' }}>ARCHITECT</span>
         </h1>
         
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'flex-start',
+          alignItems: 'flex-end',
           borderTop: '1px solid var(--hud-border)',
           paddingTop: '2rem',
           marginTop: '4rem'
         }}>
-          <p style={{
-            fontSize: '1rem',
-            color: 'var(--text-muted)',
-            lineHeight: 1.5,
-            maxWidth: '400px',
-            fontFamily: 'JetBrains Mono, monospace',
-            textTransform: 'uppercase'
-          }}>
-            Architecting <span style={{ color: '#fff' }}>high-performance</span> backends, 
-            low-level protocols, and <span style={{ color: '#fff' }}>scalable</span> infrastructure.
-          </p>
+          <div style={{ maxWidth: '500px' }}>
+            <p style={{
+              fontSize: '1rem',
+              color: 'var(--text-muted)',
+              lineHeight: 1.5,
+              marginBottom: '30px',
+              fontFamily: 'JetBrains Mono, monospace',
+              textTransform: 'uppercase'
+            }}>
+              Engineering <span style={{ color: '#fff' }}>distributed systems</span>, 
+              high-throughput <span style={{ color: '#fff' }}>microservices</span>, and 
+              low-level <span style={{ color: '#fff' }}>system optimizations</span>. 
+              Bridging complex logic with deterministic infrastructure.
+            </p>
+            
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <button className="hud-text" style={{
+                padding: '12px 25px',
+                background: 'var(--primary)',
+                color: '#000',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                pointerEvents: 'all'
+              }}>
+                [EXEC_RECON]
+              </button>
+              <button className="hud-text" style={{
+                padding: '12px 25px',
+                background: 'transparent',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.2)',
+                cursor: 'pointer',
+                pointerEvents: 'all'
+              }}>
+                [FETCH_LOGS]
+              </button>
+            </div>
+          </div>
           
           <div style={{ display: 'flex', gap: '40px' }} className="hud-text">
             <div style={{ textAlign: 'right' }}>
-              <div style={{ color: '#fff' }}>Location</div>
-              <div>Global_Node_IAD1</div>
+              <div style={{ color: '#fff', fontSize: '0.6rem' }}>LOCATION_NODE</div>
+              <div>GLOBAL_DIST // IAD1</div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ color: '#fff' }}>Focus</div>
-              <div>Backend_Logic</div>
+              <div style={{ color: '#fff', fontSize: '0.6rem' }}>PRIMARY_FOCUS</div>
+              <div>SYSTEM_ENGINEERING</div>
             </div>
           </div>
         </div>
@@ -116,3 +145,4 @@ export default function Hero() {
     </section>
   );
 }
+
