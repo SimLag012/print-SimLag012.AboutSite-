@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { playSound } from '../utils/audio';
 
 export default function Navbar() {
   const navLinks = [
@@ -46,6 +47,8 @@ export default function Navbar() {
           <li key={link.name}>
             <motion.a 
               href={link.href}
+              onMouseEnter={() => playSound('hover')}
+              onClick={() => playSound('click')}
               whileHover={{ color: 'var(--primary)', scale: 1.1, textShadow: '0 0 8px var(--primary)' }}
               style={{
                 textDecoration: 'none',

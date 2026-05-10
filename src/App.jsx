@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Home from './pages/Home'
 import ProjectDetail from './pages/ProjectDetail'
 import Background3D from './components/Background3D'
+import SoundManager from './components/SoundManager'
 import { AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -10,12 +11,13 @@ import Lenis from '@studio-freight/lenis'
 
 gsap.registerPlugin(ScrollTrigger);
 
-function AppContent({ scrollProgress }) {
+function AppContent({ scrollRef }) {
   const location = useLocation()
 
   return (
     <>
-      <Background3D scrollProgress={scrollProgress} />
+      <Background3D scrollRef={scrollRef} />
+      <SoundManager />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
@@ -28,7 +30,7 @@ function AppContent({ scrollProgress }) {
 
 function App() {
   const [loading, setLoading] = useState(true)
-  const [scrollProgress, setScrollProgress] = useState(0)
+  const scrollRef = useRef(0) // Moved to ref to avoid constant re-renders
   const lenisRef = useRef(null)
 
   useEffect(() => {
@@ -40,13 +42,12 @@ function App() {
 
   useEffect(() => {
     if (!loading) {
-      // Initialize Lenis once
       const lenis = new Lenis({
-        duration: 1.5,
+        duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        wheelMultiplier: 1.2,
-        lerp: 0.1,
+        wheelMultiplier: 1.1,
+        lerp: 0.12,
       })
 
       lenisRef.current = lenis
@@ -59,7 +60,8 @@ function App() {
       requestAnimationFrame(raf)
 
       lenis.on('scroll', (e) => {
-        setScrollProgress(e.progress)
+        // Direct ref update is much faster and doesn't trigger React re-renders
+        scrollRef.current = Math.max(0, Math.min(1, e.progress))
         ScrollTrigger.update()
       })
 
@@ -110,7 +112,7 @@ function App() {
 
   return (
     <Router>
-      <AppContent scrollProgress={scrollProgress} />
+      <AppContent scrollRef={scrollRef} />
     </Router>
   )
 }

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink, Code, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { projects } from '../data/projects';
+import { playSound } from '../utils/audio';
 
 export default function Projects() {
   return (
@@ -25,6 +26,8 @@ export default function Projects() {
             <Link 
               key={project.id} 
               to={`/project/${project.slug}`}
+              onClick={() => playSound('click')}
+              onMouseEnter={() => playSound('hover')}
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <motion.div

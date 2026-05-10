@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { playSound } from '../utils/audio';
 
 const ScrambleText = ({ text }) => {
   const [displayText, setDisplayText] = useState(text);
@@ -106,25 +107,35 @@ export default function Hero() {
             </p>
             
             <div style={{ display: 'flex', gap: '20px' }}>
-              <button className="hud-text" style={{
-                padding: '12px 25px',
-                background: 'var(--primary)',
-                color: '#000',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                pointerEvents: 'all'
-              }}>
+              <button 
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                className="hud-text" 
+                style={{
+                  padding: '12px 25px',
+                  background: 'var(--primary)',
+                  color: '#000',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  pointerEvents: 'all'
+                }}
+              >
                 [EXEC_RECON]
               </button>
-              <button className="hud-text" style={{
-                padding: '12px 25px',
-                background: 'transparent',
-                color: '#fff',
-                border: '1px solid rgba(255,255,255,0.2)',
-                cursor: 'pointer',
-                pointerEvents: 'all'
-              }}>
+              <button 
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                className="hud-text" 
+                style={{
+                  padding: '12px 25px',
+                  background: 'transparent',
+                  color: '#fff',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  cursor: 'pointer',
+                  pointerEvents: 'all'
+                }}
+              >
                 [FETCH_LOGS]
               </button>
             </div>
