@@ -52,25 +52,21 @@ function App() {
 
       lenisRef.current = lenis
 
-      function raf(time) {
-        lenis.raf(time)
-        requestAnimationFrame(raf)
-      }
-
-      requestAnimationFrame(raf)
-
       lenis.on('scroll', (e) => {
         scrollRef.current = Math.max(0, Math.min(1, e.progress))
         ScrollTrigger.update()
       })
 
-      gsap.ticker.add((time) => {
+      const updateLoop = (time) => {
         lenis.raf(time * 1000)
-      })
+      }
+
+      gsap.ticker.add(updateLoop)
+      gsap.ticker.lagSmoothing(0)
 
       return () => {
         lenis.destroy()
-        gsap.ticker.remove(lenis.raf)
+        gsap.ticker.remove(updateLoop)
       }
     }
   }, [loading])

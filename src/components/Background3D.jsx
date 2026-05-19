@@ -1,7 +1,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars, Float, Sparkles, MeshWobbleMaterial } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette, Noise, ChromaticAberration } from '@react-three/postprocessing';
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import * as THREE from 'three';
 
 function InteractiveElements({ smoothScroll, smoothMouse }) {
@@ -165,8 +165,21 @@ function DynamicGrid({ smoothScroll, smoothMouse }) {
 }
 
 export default function Background3D({ scrollRef }) {
+  const [canvasKey, setCanvasKey] = useState(0);
   const smoothMouse = useRef({ x: 0, y: 0 });
   const smoothScroll = useRef(0);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        setCanvasKey(prev => prev + 1);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   return (
     <div style={{ 
@@ -180,6 +193,7 @@ export default function Background3D({ scrollRef }) {
       background: 'radial-gradient(circle at 60% 40%, rgba(0, 255, 102, 0.05) 0%, rgba(6, 12, 8, 0.6) 60%, rgba(1, 3, 2, 0.7) 100%)'
     }}>
       <Canvas 
+        key={canvasKey}
         dpr={[1, 1.5]} 
         gl={{ 
           antialias: true,
