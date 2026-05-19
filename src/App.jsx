@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
-import ProjectDetail from './pages/ProjectDetail'
 import Background3D from './components/Background3D'
 import SoundManager from './components/SoundManager'
 import { AnimatePresence } from 'framer-motion'
@@ -21,7 +20,8 @@ function AppContent({ scrollRef }) {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
-          <Route path="/project/:slug" element={<ProjectDetail />} />
+          {/* Fallback to home */}
+          <Route path="*" element={<Home />} />
         </Routes>
       </AnimatePresence>
     </>
@@ -30,20 +30,20 @@ function AppContent({ scrollRef }) {
 
 function App() {
   const [loading, setLoading] = useState(true)
-  const scrollRef = useRef(0) // Moved to ref to avoid constant re-renders
+  const scrollRef = useRef(0)
   const lenisRef = useRef(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 2500)
+    }, 1800) // Slightly faster load for minimal, immediate feel
     return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {
     if (!loading) {
       const lenis = new Lenis({
-        duration: 1.2,
+        duration: 1.0,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
         wheelMultiplier: 1.1,
@@ -60,7 +60,6 @@ function App() {
       requestAnimationFrame(raf)
 
       lenis.on('scroll', (e) => {
-        // Direct ref update is much faster and doesn't trigger React re-renders
         scrollRef.current = Math.max(0, Math.min(1, e.progress))
         ScrollTrigger.update()
       })
@@ -81,7 +80,7 @@ function App() {
       <div style={{
         position: 'fixed',
         inset: 0,
-        background: '#050505',
+        background: '#030303',
         zIndex: 10000,
         display: 'flex',
         flexDirection: 'column',
@@ -89,21 +88,28 @@ function App() {
         alignItems: 'center',
         fontFamily: 'JetBrains Mono, monospace'
       }}>
-        <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '20px', letterSpacing: '4px' }}>
-          RESTORING_VISUAL_CORE
+        <div style={{ 
+          fontSize: '0.75rem', 
+          color: '#00ff66', 
+          marginBottom: '15px', 
+          letterSpacing: '5px',
+          textShadow: '0 0 8px rgba(0, 255, 102, 0.4)' 
+        }}>
+          DECRYPTING_BACKEND_INFRA
         </div>
-        <div style={{ width: '200px', height: '1px', background: '#222', overflow: 'hidden' }}>
+        <div style={{ width: '180px', height: '2px', background: '#111', overflow: 'hidden' }}>
           <div style={{ 
             height: '100%', 
-            background: '#fff', 
+            background: '#00ff66', 
             width: '100%',
-            animation: 'load 2s ease-in-out'
+            animation: 'load 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            boxShadow: '0 0 10px #00ff66'
           }} />
         </div>
         <style>{`
           @keyframes load {
-            0% { width: 0; }
-            100% { width: 100%; }
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
           }
         `}</style>
       </div>

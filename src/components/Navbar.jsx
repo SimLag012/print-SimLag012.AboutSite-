@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 import { playSound } from '../utils/audio';
+import { Github, Linkedin } from './Icons';
 
 export default function Navbar() {
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Systems', href: '#projects' },
-    { name: 'Core', href: '#about' },
-    { name: 'Architecture', href: '#architecture' },
+    { name: 'Home', href: '#hero' },
+    { name: 'About', href: '#about' },
+    { name: 'Projects', href: '#projects' },
   ];
 
   return (
@@ -18,53 +18,99 @@ export default function Navbar() {
         position: 'fixed',
         top: 0,
         width: '100%',
-        padding: '1.5rem 5%',
+        padding: '1.2rem 5%',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 1000,
-        backdropFilter: 'blur(15px)',
-        background: 'rgba(0,0,0,0.4)',
-        borderBottom: '1px solid rgba(0,242,255,0.1)'
+        backdropFilter: 'blur(16px)',
+        background: 'rgba(10, 15, 25, 0.7)',
+        borderBottom: '1px solid rgba(0, 255, 102, 0.08)'
       }}
     >
       <div style={{
-        fontFamily: 'Orbitron, sans-serif',
-        fontSize: '1.5rem',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '1.3rem',
         fontWeight: 900,
-        letterSpacing: '2px',
+        letterSpacing: '-0.02em',
         color: '#fff'
       }}>
-        SimLag012<span style={{ color: 'var(--primary)' }}>_</span>
+        Simone<span style={{ color: 'var(--primary)' }}>.</span>
       </div>
       
-      <ul style={{
-        display: 'flex',
-        listStyle: 'none',
-        gap: '40px'
-      }}>
-        {navLinks.map((link) => (
-          <li key={link.name}>
-            <motion.a 
-              href={link.href}
-              onMouseEnter={() => playSound('hover')}
-              onClick={() => playSound('click')}
-              whileHover={{ color: 'var(--primary)', scale: 1.1, textShadow: '0 0 8px var(--primary)' }}
-              style={{
-                textDecoration: 'none',
-                color: 'var(--text-muted)',
-                textTransform: 'uppercase',
-                fontSize: '0.75rem',
-                letterSpacing: '2px',
-                transition: '0.3s',
-                fontWeight: 700
-              }}
-            >
-              {link.name}
-            </motion.a>
-          </li>
-        ))}
-      </ul>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+        <ul style={{
+          display: 'flex',
+          listStyle: 'none',
+          gap: '30px'
+        }}>
+          {navLinks.map((link) => (
+            <li key={link.name}>
+              <motion.a 
+                href={link.href}
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => playSound('click')}
+                whileHover={{ color: 'var(--primary)', scale: 1.05 }}
+                style={{
+                  textDecoration: 'none',
+                  color: '#aaa',
+                  fontSize: '0.82rem',
+                  fontFamily: 'Inter, sans-serif',
+                  letterSpacing: '-0.01em',
+                  transition: '0.3s',
+                  fontWeight: 500
+                }}
+              >
+                {link.name}
+              </motion.a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Divider */}
+        <div style={{ width: '1px', height: '16px', background: 'rgba(255, 255, 255, 0.1)' }} />
+
+        {/* Elegant Social Connections */}
+        <div style={{ display: 'flex', gap: '15px' }}>
+          <motion.a
+            href="https://github.com/SimLag012"
+            target="_blank"
+            rel="noopener noreferrer"
+            onMouseEnter={() => playSound('hover')}
+            onClick={() => playSound('click')}
+            whileHover={{ color: 'var(--primary)', scale: 1.1 }}
+            style={{ 
+              color: '#aaa', 
+              transition: '0.3s', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              textDecoration: 'none'
+            }}
+            title="Open GitHub Profile"
+          >
+            <Github size={18} />
+          </motion.a>
+          
+          <motion.a
+            href="https://linkedin.com/in/simlag012"
+            target="_blank"
+            rel="noopener noreferrer"
+            onMouseEnter={() => playSound('hover')}
+            onClick={() => playSound('click')}
+            whileHover={{ color: 'var(--primary)', scale: 1.1 }}
+            style={{ 
+              color: '#aaa', 
+              transition: '0.3s', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              textDecoration: 'none'
+            }}
+            title="Open LinkedIn Profile"
+          >
+            <Linkedin size={18} />
+          </motion.a>
+        </div>
+      </div>
     </motion.nav>
   );
 }

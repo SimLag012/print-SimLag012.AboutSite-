@@ -42,39 +42,6 @@ export default function SoundManager() {
     setIsMuted(!isMuted);
   };
 
-  return (
-    <div style={{
-      position: 'fixed',
-      bottom: '40px',
-      left: '40px',
-      zIndex: 10001,
-      display: 'flex',
-      alignItems: 'center',
-      gap: '15px'
-    }}>
-      <motion.button
-        onClick={toggleMute}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        style={{
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          color: isMuted ? '#444' : 'var(--primary)',
-          padding: '10px',
-          width: '45px',
-          height: '45px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          borderRadius: '50%',
-          backdropFilter: 'blur(10px)',
-          fontFamily: 'JetBrains Mono, monospace',
-          fontSize: '0.6rem'
-        }}
-      >
-        {isMuted ? 'MUTED' : 'AUDIO'}
-      </motion.button>
-    </div>
-  );
+  // Returning null to remove the UI completely, while preserving the background logic just in case.
+  return null;
 }
