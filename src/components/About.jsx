@@ -6,34 +6,34 @@ import './About.css';
 
 export default function About() {
   const specs = [
-    { 
+    {
       icon: <Server size={20} style={{ color: 'var(--primary)' }} />,
-      label: "CORE LANGUAGES", 
-      value: "Python // Lua // HTML // CSS" 
+      label: "CORE LANGUAGES",
+      value: "Python // Lua // SQL // C++"
     },
-    { 
+    {
       icon: <Database size={20} style={{ color: 'var(--primary)' }} />,
-      label: "WEB & UI DEVELOPMENT", 
-      value: "HTML5 // CSS3 // Responsive Design" 
+      label: "BACKEND & DATABASES",
+      value: "FastAPI // SQLite // PostgreSQL & PostGIS // Docker"
     },
-    { 
+    {
       icon: <Cpu size={20} style={{ color: 'var(--primary)' }} />,
-      label: "AI & SOFTWARE", 
-      value: "Kivy // Machine Learning Integrations // Task Managers" 
+      label: "AI & SOFTWARE",
+      value: "Kivy // Machine Learning Integrations // Agents, Bots and Softwares"
     },
-    { 
+    {
       icon: <Shield size={20} style={{ color: 'var(--primary)' }} />,
-      label: "COMPETITIVE ACHIEVEMENTS", 
-      value: "1st Cesena Problem Solving // 2nd GreenMindAI Hackathon" 
+      label: "COMPETITIVE ACHIEVEMENTS",
+      value: "1st Cesena Problem Solving // 2nd GreenMindAI Hackathon"
     },
   ];
 
   return (
     <section id="about" className="about-section">
       <div className="about-grid-responsive">
-        
+
         {/* Left Side: Bold Statement and Experience Details */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -42,13 +42,13 @@ export default function About() {
           <div className="about-subtitle">
             MY PHILOSOPHY
           </div>
-          
+
           <h2 className="about-title">
-            Building Smart,<br/>
-            Full-Stack<br/>
+            Building Smart,<br />
+            Backend & AI<br />
             Ecosystems.
           </h2>
-          
+
           <div className="about-desc-container">
             <p className="about-desc-para">
               I focus on developing AI-driven projects and robust backend logic. From creating intelligent task tracking systems to coding complex Roblox games in Lua, I specialize in translating complex problems into efficient code.
@@ -59,7 +59,7 @@ export default function About() {
           </div>
 
           <div className="about-social-container">
-            <a 
+            <a
               href="https://github.com/SimLag012"
               target="_blank"
               rel="noopener noreferrer"
@@ -69,7 +69,7 @@ export default function About() {
             >
               <Github size={15} /> GitHub Profile
             </a>
-            <a 
+            <a
               href="https://linkedin.com/in/simlag012"
               target="_blank"
               rel="noopener noreferrer"
@@ -81,7 +81,7 @@ export default function About() {
             </a>
           </div>
         </motion.div>
-        
+
         {/* Right Side: Clean Visual Specs Grid */}
         <div className="about-specs-grid">
           {specs.map((spec, i) => (

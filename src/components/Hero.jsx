@@ -13,17 +13,17 @@ const ScrambleText = ({ text }) => {
   useEffect(() => {
     let iteration = 0;
     const interval = setInterval(() => {
-      setDisplayText(prev => 
+      setDisplayText(() =>
         text.split("")
           .map((char, index) => {
-            if(index < iteration) return text[index];
+            if (index < iteration) return text[index];
             return chars[Math.floor(Math.random() * chars.length)];
           })
           .join("")
       );
-      
-      if(iteration >= text.length) clearInterval(interval);
-      iteration += 1/3;
+
+      if (iteration >= text.length) clearInterval(interval);
+      iteration += 1 / 3;
     }, 25);
     return () => clearInterval(interval);
   }, [text]);
@@ -49,17 +49,17 @@ export default function Hero() {
                 AVAILABLE FOR PRODUCTION ROLES
               </span>
             </div>
-            
+
             <h1 className="hero-title">
               Hi, I'm <span className="hero-name-highlight"><ScrambleText text="Simone" /></span>
             </h1>
-            
+
             <h2 className="hero-subtitle">
-              AI & Full-Stack Developer
+              AI & Backend Developer
             </h2>
-            
+
             <p className="hero-desc">
-              I am a software developer and student at I.I.S. Marconi - Mangano. 
+              I am a <strong style={{ color: 'var(--primary)' }}>Software Developer</strong> and student at I.I.S. Marconi - Mangano.
               With solid expertise in <strong style={{ color: 'var(--primary)' }}>Python and Lua</strong>, I build AI-based systems, mobile apps, and robust backend logic for complex environments.
             </p>
 
@@ -71,7 +71,7 @@ export default function Hero() {
                 </div>
                 <div>
                   <h3 className="hero-quality-title">AI & Application Development</h3>
-                  <p className="hero-quality-desc">Building AI task managers and Kivy mobile apps with DB integrations.</p>
+                  <p className="hero-quality-desc">Building softwares involving AI reasoning and complex calulations.</p>
                 </div>
               </div>
 
@@ -91,14 +91,14 @@ export default function Hero() {
                 </div>
                 <div>
                   <h3 className="hero-quality-title">Hackathons & Problem Solving</h3>
-                  <p className="hero-quality-desc">1st place Cesena Problem Solving Olympics, 2nd place GreenMindAI Hackathon.</p>
+                  <p className="hero-quality-desc">1st place Cesena Informatic Problem Solving Olympics, 2nd place GreenMindAI Hackathon.</p>
                 </div>
               </div>
             </div>
 
             {/* Premium CTA Buttons */}
             <div className="hero-cta">
-              <a 
+              <a
                 href="#projects"
                 onMouseEnter={() => playSound('hover')}
                 onClick={() => playSound('click')}
@@ -118,9 +118,9 @@ export default function Hero() {
           >
             {/* Profile Avatar Image with Sharp Frame */}
             <div className="hero-avatar-frame">
-              <img 
-                src={profileAvatar} 
-                alt="Simone - Backend Engineer" 
+              <img
+                src={profileAvatar}
+                alt="Simone - Backend Engineer"
                 className="hero-avatar-img"
               />
             </div>
@@ -136,7 +136,7 @@ export default function Hero() {
 
             {/* Social Links under the face */}
             <div className="hero-social-links">
-              <a 
+              <a
                 href="https://github.com/SimLag012"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -146,8 +146,8 @@ export default function Hero() {
               >
                 <Github size={18} /> GitHub
               </a>
-              <a 
-                href="https://linkedin.com/in/simlag012"
+              <a
+                href="https://linkedin.com/in/simone-lagana"
                 target="_blank"
                 rel="noopener noreferrer"
                 onMouseEnter={() => playSound('hover')}

@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { projects } from '../data/projects';
-import { ArrowLeft, ChevronRight, Activity, Shield, Cpu, Zap } from 'lucide-react';
+import { ArrowLeft, Activity } from 'lucide-react';
 import { useEffect } from 'react';
 
 export default function ProjectDetail() {
@@ -49,7 +49,7 @@ export default function ProjectDetail() {
         {/* Left Side: Info */}
         <div>
           <div className="hud-text" style={{ color: 'var(--primary)', marginBottom: '1rem' }}>
-            ID_{project.id} // {project.tags.join('_')}
+            ID_{project.id} // {(project.tags || project.tech || []).join('_')}
           </div>
           <h1 style={{ 
             fontSize: 'clamp(2.5rem, 6vw, 5rem)', 
@@ -124,8 +124,8 @@ export default function ProjectDetail() {
               {[...Array(20)].map((_, i) => (
                 <motion.div 
                   key={i}
-                  animate={{ height: [10, Math.random() * 30 + 10, 10] }}
-                  transition={{ repeat: Infinity, duration: 0.5 + Math.random(), ease: "easeInOut" }}
+                  animate={{ height: [10, 10 + ((i * 7) % 30), 10] }}
+                  transition={{ repeat: Infinity, duration: 0.5 + ((i * 3) % 10) / 10, ease: "easeInOut" }}
                   style={{ width: '4px', background: 'var(--secondary)', opacity: 0.5 }}
                 />
               ))}
